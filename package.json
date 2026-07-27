@@ -1,5 +1,12 @@
 {
   "name": "raven",
   "version": "1.0.0",
-  "type": "module"
+  "type": "module",
+  "scripts": {
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check"
+  },
+  "devDependencies": {
+    "oxfmt": "^0.61.0"
+  }
 }

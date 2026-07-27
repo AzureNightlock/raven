@@ -1,36 +1,26 @@
 import fs from "fs";
 
-const KEYWORDS = new Set([
-  "createElement",
-  "as",
-]);
+const KEYWORDS = new Set(["createElement", "as"]);
 const source = fs.readFileSync("page.rvn", "utf-8");
 const tokens = tokenize(source);
-
-
-console.log(tokens);
 
 function isLetter(char) {
   return /[a-zA-Z]/.test(char);
 }
 
 function skipWhitespace() {
-  while (
-    source[position] === " " ||
-    source[position] === "\t" ||
-    source[position] === "\n"
-  ) {
+  while (source[position] === " " || source[position] === "\t" || source[position] === "\n") {
     if (source[position] === "\n") {
       row++;
       column = 1;
-    }
-    else {
+    } else {
       column++;
     }
 
     position++;
   }
 }
+
 export function tokenize(source) {
   const tokens = [];
   let word = "";
@@ -57,8 +47,7 @@ export function tokenize(source) {
         });
 
         word = "";
-      }
-      else if (char === '"') {
+      } else if (char === '"') {
         // for string: "button"
         i++;
         let str = "";
@@ -84,9 +73,10 @@ export function tokenize(source) {
         tokens.push({ type: "SYMBOL", value: "RIGHT_BRACE" });
       } else if (char === ".") {
         tokens.push({ type: "SYMBOL", value: "DOT" });
-      }
-      else if (char === "=") {
+      } else if (char === "=") {
         tokens.push({ type: "SYMBOL", value: "EQUALS" });
+      } else if (char === ">") {
+        tokens.push({ type: "SYMBOL", value: "GREATER_THAN" });
       }
       // --------------------
       // NUMBERS
@@ -105,12 +95,8 @@ export function tokenize(source) {
 
         i--;
       }
-        
     }
-
-    console.log(char, word);
     i++;
   }
-
   return tokens;
 }
