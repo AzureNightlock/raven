@@ -1,27 +1,76 @@
+import { RavenError } from "./errors.js";
+
+const SYMBOLS = {
+  DOT: ".",
+  LEFT_PAREN: "(",
+  RIGHT_PAREN: ")",
+  LEFT_BRACE: "{",
+  RIGHT_BRACE: "}",
+  EQUALS: "=",
+  GREATER_THAN: ">",
+};
+
 export function parse(tokens) {
   let position = 0;
 
+  const last = tokens[tokens.length - 1];
+  const eof = last
+    ? {
+        type: "EOF",
+        value: null,
+        line: last.line,
+        column: last.column + last.length,
+        length: 1,
+      }
+    : { type: "EOF", value: null, line: 1, column: 1, length: 1 };
+
   function peek() {
-    return tokens[position];
+    return tokens[position] ?? eof;
   }
 
   function advance() {
-    return tokens[position++];
+    const token = tokens[position] ?? eof;
+    position++;
+    return token;
+  }
+
+  function atEnd() {
+    return peek().type === "EOF";
+  }
+
+  function label(type, value) {
+    if (value === undefined) return type;
+    return `"${SYMBOLS[value] ?? value}"`;
+  }
+
+  function describe(token) {
+    return token.type === "EOF"
+      ? "the end of the file"
+      : `"${tokenToSource(token)}"`;
   }
 
   function expect(type, value) {
     const token = advance();
 
-    if (!token) {
-      throw new Error(`Expected ${value ?? type}, but reached the end of the file`);
+    if (token.type === "EOF") {
+      throw new RavenError(
+        `Expected ${label(type, value)}, but reached the end of the file`,
+        token,
+      );
     }
 
     if (token.type !== type) {
-      throw new Error(`Expected ${type}, but got ${token.type} "${token.value}"`);
+      throw new RavenError(
+        `Expected ${label(type, value)}, but got ${describe(token)}`,
+        token,
+      );
     }
 
     if (value !== undefined && token.value !== value) {
-      throw new Error(`Expected "${value}", but got "${token.value}"`);
+      throw new RavenError(
+        `Expected ${label(type, value)}, but got ${describe(token)}`,
+        token,
+      );
     }
 
     return token;
@@ -33,17 +82,7 @@ export function parse(tokens) {
     }
 
     if (token.type === "SYMBOL") {
-      const symbols = {
-        DOT: ".",
-        LEFT_PAREN: "(",
-        RIGHT_PAREN: ")",
-        LEFT_BRACE: "{",
-        RIGHT_BRACE: "}",
-        EQUALS: "=",
-        GREATER_THAN: ">",
-      };
-
-      return symbols[token.value];
+      return SYMBOLS[token.value];
     }
 
     return String(token.value);
@@ -71,8 +110,13 @@ export function parse(tokens) {
     } else if (nextToken.type === "STRING") {
       value = expect("STRING");
     } else {
-      throw new Error(`Expected NUMBER or STRING`);
+      throw new RavenError(
+        `Expected a number or string, but got ${describe(nextToken)}`,
+        nextToken,
+        `Property values must be a literal, like "hello" or 42.`,
+      );
     }
+
     return {
       type: "PropertyAssignment",
       object: object.value,
@@ -90,16 +134,26 @@ export function parse(tokens) {
     expect("SYMBOL", "RIGHT_PAREN");
     expect("SYMBOL", "EQUALS");
     expect("SYMBOL", "GREATER_THAN");
-    expect("SYMBOL", "LEFT_BRACE");
+    const open = expect("SYMBOL", "LEFT_BRACE");
 
     let action = "";
 
-    while (peek() && peek().value !== "RIGHT_BRACE") {
+    while (!atEnd() && peek().value !== "RIGHT_BRACE") {
       action += tokenToSource(peek());
       advance();
     }
+
+    if (atEnd()) {
+      throw new RavenError(
+        `Unclosed handler body for "${event.value}"`,
+        open,
+        `This "{" is never closed.`,
+      );
+    }
+
     expect("SYMBOL", "RIGHT_BRACE");
     expect("SYMBOL", "RIGHT_PAREN");
+
     return {
       type: "EventListener",
       object: object.value,
@@ -121,12 +175,20 @@ export function parse(tokens) {
 
     const alias = expect("IDENTIFIER");
 
-    expect("SYMBOL", "LEFT_BRACE");
+    const open = expect("SYMBOL", "LEFT_BRACE");
 
     const body = [];
 
-    while (peek() && peek().value !== "RIGHT_BRACE") {
+    while (!atEnd() && peek().value !== "RIGHT_BRACE") {
       body.push(parseStatement());
+    }
+
+    if (atEnd()) {
+      throw new RavenError(
+        `Unclosed block for "${alias.value}"`,
+        open,
+        `This "{" is never closed.`,
+      );
     }
 
     expect("SYMBOL", "RIGHT_BRACE");
@@ -142,8 +204,8 @@ export function parse(tokens) {
   function parseStatement() {
     const token = peek();
 
-    if (!token) {
-      throw new Error("Unexpected end of input");
+    if (token.type === "EOF") {
+      throw new RavenError("Unexpected end of input", token);
     }
 
     if (token.type === "KEYWORD" && token.value === "createElement") {
@@ -158,14 +220,18 @@ export function parse(tokens) {
         return parsePropertyAssignment();
       }
 
-      if (member?.value.startsWith("on")) {
+      if (member?.type === "IDENTIFIER" && member.value.startsWith("on")) {
         return parseEventListener();
       }
 
-      throw new Error(`Expected property assignment or event after "${token.value}"`);
+      throw new RavenError(
+        `Expected a property assignment or event handler after "${token.value}"`,
+        token,
+        `Write "${token.value}.property = value" or "${token.value}.onEvent(() => { ... })".`,
+      );
     }
 
-    throw new Error(`Unexpected token ${token.type} "${token.value}"`);
+    throw new RavenError(`Unexpected ${token.type} ${describe(token)}`, token);
   }
 
   const body = [];

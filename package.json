@@ -8,5 +8,8 @@
   },
   "devDependencies": {
     "oxfmt": "^0.61.0"
+  },
+  "bin": {
+    "raven": "./cli.js"
   }
 }
