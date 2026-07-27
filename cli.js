@@ -29,7 +29,7 @@ if (!commands.has(command)) {
 }
 
 console.log(
-  `${purple("🪶 raven")} ${dim("›")} ${bold(deepPurple(command))}`,
+  `${purple("raven")} ${dim("›")} ${bold(deepPurple(command))}`,
 );
 
 const entryFile = path.join(currentDirectory, "entry.js");
