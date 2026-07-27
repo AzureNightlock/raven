@@ -1,0 +1,3 @@
+createElement("p") as ptag {
+  ptag.value = 5
+}
