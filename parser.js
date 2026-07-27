@@ -36,11 +36,11 @@ export function parse(tokens) {
   function parsePropertyAssignment() {
     const object = expect("IDENTIFIER");
 
-    expect("DOT");
+    expect("SYMBOL", "DOT");
 
     const property = expect("IDENTIFIER");
 
-    expect("EQUALS");
+    expect("SYMBOL", "EQUALS");
 
     const value = expect("NUMBER");
 
@@ -55,28 +55,28 @@ export function parse(tokens) {
   function parseCreateElement() {
     expect("KEYWORD", "createElement");
 
-    expect("LEFT_PAREN");
+    expect("SYMBOL", "LEFT_PAREN");
 
     const tagName = expect("STRING");
 
-    expect("RIGHT_PAREN");
+    expect("SYMBOL", "RIGHT_PAREN");
 
     expect("KEYWORD", "as");
 
     const alias = expect("IDENTIFIER");
 
-    expect("LEFT_BRACE");
+    expect("SYMBOL", "LEFT_BRACE");
 
     const body = [];
 
     while (
       peek() &&
-      peek().type !== "RIGHT_BRACE"
+      peek().value !== "RIGHT_BRACE"
     ) {
       body.push(parseStatement());
     }
 
-    expect("RIGHT_BRACE");
+    expect("SYMBOL", "RIGHT_BRACE");
 
     return {
       type: "CreateElementStatement",
@@ -116,7 +116,7 @@ export function parse(tokens) {
   }
 
   return {
-    type: "Program",
+    type: "root",
     body,
   };
 }
