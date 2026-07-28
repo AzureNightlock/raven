@@ -1,23 +1,4 @@
-const useColor =
-  process.stdout.isTTY && !process.env.NO_COLOR && process.env.TERM !== "dumb";
-
-const useUnicode =
-  process.env.TERM !== "dumb" &&
-  (process.platform !== "win32" ||
-    Boolean(process.env.WT_SESSION) ||
-    Boolean(process.env.TERM_PROGRAM));
-
-const paint = (code) => (text) =>
-  useColor ? `\x1b[${code}m${text}\x1b[0m` : text;
-
-const purple = paint("38;5;141");
-const red = paint("38;5;203");
-const bold = paint("1");
-const dim = paint("2");
-
-const CHARS = useUnicode
-  ? { mark: "x", bar: "│", ann: "·", open: "╭─", close: "╰────", under: "─" }
-  : { mark: "x", bar: "|", ann: ":", open: "+-", close: "+----", under: "^" };
+import { GLYPH, purple, red, bold, dim } from "./style.js";
 
 const TAB_WIDTH = 4;
 
@@ -44,7 +25,7 @@ function visualColumn(rawLine, column) {
 }
 
 export function renderError(error, source, file = "<anonymous>") {
-  if (!error.token) return `${red(CHARS.mark)} ${bold(error.message)}`;
+  if (!error.token) return `  ${red(GLYPH.mark)} ${bold(error.message)}`;
 
   const lines = source.replace(/\r\n?/g, "\n").split("\n");
   const { line, column, length } = error.token;
@@ -66,24 +47,24 @@ export function renderError(error, source, file = "<anonymous>") {
   const indent = " ".repeat(caretColumn - 1);
 
   const out = [
-    `  ${red(CHARS.mark)} ${bold(error.message)}`,
-    `${gutter} ${CHARS.open}[${dim(`${file}:${line}:${column}`)}]`,
+    `  ${red(GLYPH.mark)} ${bold(error.message)}`,
+    `${gutter} ${GLYPH.open}[${dim(`${file}:${line}:${column}`)}]`,
   ];
 
   if (line - 2 >= 0) {
-    out.push(`${pad(line - 1)} ${CHARS.bar} ${expandTabs(lines[line - 2])}`);
+    out.push(`${pad(line - 1)} ${GLYPH.bar} ${expandTabs(lines[line - 2])}`);
   }
 
-  out.push(`${pad(line)} ${CHARS.bar} ${text}`);
+  out.push(`${pad(line)} ${GLYPH.bar} ${text}`);
   out.push(
-    `${gutter} ${CHARS.ann} ${indent}${red(CHARS.under.repeat(caretLength))}`,
+    `${gutter} ${GLYPH.ann} ${indent}${red(GLYPH.under.repeat(caretLength))}`,
   );
 
   if (line < lines.length) {
-    out.push(`${pad(line + 1)} ${CHARS.bar} ${expandTabs(lines[line])}`);
+    out.push(`${pad(line + 1)} ${GLYPH.bar} ${expandTabs(lines[line])}`);
   }
 
-  out.push(`${gutter} ${CHARS.close}`);
+  out.push(`${gutter} ${GLYPH.close}`);
 
   if (error.hint) out.push(`  ${purple("help:")} ${error.hint}`);
 
@@ -92,6 +73,6 @@ export function renderError(error, source, file = "<anonymous>") {
 
 export function reportAndExit(error, source, file) {
   if (!(error instanceof RavenError)) throw error;
-  console.error(renderError(error, source, file));
+  console.error("\n" + renderError(error, source, file) + "\n");
   process.exit(1);
 }
