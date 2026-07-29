@@ -82,11 +82,26 @@ export function tokenize(source) {
         tokens.push({ type: "SYMBOL", value: "RIGHT_BRACE", line, column, length: 1 });
       } else if (char === ".") {
         tokens.push({ type: "SYMBOL", value: "DOT", line, column, length: 1 });
+      } else if (char === "=" && source[i + 1] === ">") {
+        tokens.push({
+          type: "SYMBOL",
+          value: "ARROW",
+          line,
+          column,
+          length: 2,
+        });
+        i++;
+        column++;
       } else if (char === "=") {
-        tokens.push({ type: "SYMBOL", value: "EQUALS", line, column, length: 1 });
-      } else if (char === ">") {
-        tokens.push({ type: "SYMBOL", value: "GREATER_THAN", line, column, length: 1 });
+        tokens.push({
+          type: "SYMBOL",
+          value: "EQUALS",
+          line,
+          column,
+          length: 1,
+        });
       }
+
       // --------------------
       // NUMBERS
       if (/[0-9]/.test(char)) {

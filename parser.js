@@ -132,8 +132,7 @@ export function parse(tokens) {
     expect("SYMBOL", "LEFT_PAREN");
     expect("SYMBOL", "LEFT_PAREN");
     expect("SYMBOL", "RIGHT_PAREN");
-    expect("SYMBOL", "EQUALS");
-    expect("SYMBOL", "GREATER_THAN");
+    expect("SYMBOL", "ARROW");
     const open = expect("SYMBOL", "LEFT_BRACE");
 
     let action = "";
