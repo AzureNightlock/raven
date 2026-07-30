@@ -9,8 +9,9 @@ import { reportAndExit } from "./errors.js";
 import { GLYPH, purple, deepPurple, red, green, bold, dim } from "./style.js";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
+const cwd = process.cwd();
 const file = process.argv[3] ?? "page.rvn";
-const outputDir = path.join(root, "output");
+const outputDir = path.join(cwd, "output");
 
 const version = (() => {
   try {
@@ -43,7 +44,7 @@ function formatSize(bytes) {
 }
 
 const started = performance.now();
-const source = fs.readFileSync(path.join(root, file), "utf-8");
+const source = fs.readFileSync(path.join(cwd, file), "utf-8");
 
 console.log(`${purple("raven")} ${dim(`v${version}`)}`);
 
