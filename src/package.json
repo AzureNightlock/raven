@@ -4,12 +4,5 @@
   "bin": {
     "raven": "./src/cli.js"
   },
-  "type": "module",
-  "scripts": {
-    "fmt": "oxfmt",
-    "fmt:check": "oxfmt --check"
-  },
-  "devDependencies": {
-    "oxfmt": "^0.61.0"
-  }
+  "type": "module"
 }
