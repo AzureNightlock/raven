@@ -1,0 +1,97 @@
+{
+  "name": "Raven",
+  "scopeName": "source.raven",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#strings" },
+    { "include": "#numbers" },
+    { "include": "#aliases" },
+    { "include": "#keywords" },
+    { "include": "#properties" },
+    { "include": "#operators" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.raven",
+          "match": "//.*$"
+        },
+        {
+          "name": "comment.block.raven",
+          "begin": "/\\*",
+          "end": "\\*/"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.raven",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.raven",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.raven",
+          "match": "\\b[0-9]+(?:\\.[0-9]+)?\\b"
+        }
+      ]
+    },
+    "aliases": {
+      "patterns": [
+        {
+          "match": "\\b(as)\\s+([A-Za-z][A-Za-z_]*[0-9]*)\\b",
+          "captures": {
+            "1": {
+              "name": "keyword.control.raven"
+            },
+            "2": {
+              "name": "variable.other.readwrite.raven"
+            }
+          }
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.raven",
+          "match": "\\b(createElement|as)\\b"
+        }
+      ]
+    },
+    "properties": {
+      "patterns": [
+        {
+          "match": "(\\.)([A-Za-z][A-Za-z_]*[0-9]*)",
+          "captures": {
+            "1": {
+              "name": "punctuation.accessor.raven"
+            },
+            "2": {
+              "name": "variable.other.property.raven"
+            }
+          }
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.raven",
+          "match": "=>|="
+        }
+      ]
+    }
+  }
+}

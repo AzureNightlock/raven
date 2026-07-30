@@ -1,0 +1,9 @@
+createElement("div") as container {
+    container.class = "wrapper"
+
+    createElement("button") as button1 {
+        button1.textContent = "Click me"
+        button1.onClick(() => {
+        })
+    }
+}

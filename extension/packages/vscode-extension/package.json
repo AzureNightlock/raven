@@ -1,0 +1,39 @@
+{
+  "name": "raven-language-support",
+  "displayName": "Raven Language Support",
+  "description": "Basic language support for Raven",
+  "version": "0.1.0",
+  "main": "./extension.js",
+  "publisher": "raven",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "raven",
+        "aliases": [
+          "Raven",
+          "raven"
+        ],
+        "extensions": [
+          ".rvn"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "raven",
+        "scopeName": "source.raven",
+        "path": "./syntaxes/raven.tmLanguage.json"
+      }
+    ]
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.9.2"
+  }
+}
