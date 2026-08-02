@@ -120,5 +120,5 @@ function generateNode(node, lines, parent) {
 
     lines.push(`  ${node.action};`);
     lines.push(`});`);
-  }
+  } 
 }
