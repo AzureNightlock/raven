@@ -13,14 +13,6 @@ const cwd = process.cwd();
 const file = process.argv[3] ?? "src/page.rvn";
 const outputDir = path.join(cwd, "output");
 
-const version = (() => {
-  try {
-    return JSON.parse(fs.readFileSync(path.join(root, "../package.json"), "utf-8")).version;
-  } catch {
-    return "0.0.0";
-  }
-})();
-
 const TOTAL = 4;
 const LABEL_WIDTH = 24;
 let stage = 0;
@@ -46,7 +38,7 @@ function formatSize(bytes) {
 const started = performance.now();
 const source = fs.readFileSync(path.join(cwd, file), "utf-8");
 
-console.log(`${purple("raven")} ${dim(`v${version}`)}`);
+
 
 let written = [];
 

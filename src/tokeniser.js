@@ -1,6 +1,6 @@
 import fs from "fs";
+import { KEYWORDS } from "./language/types.js";
 
-const KEYWORDS = new Set(["createElement", "as"]);
 const source = fs.readFileSync("src/page.rvn", "utf-8").replace(/\r\n?/g, "\n");
 const tokens = tokenize(source);
 

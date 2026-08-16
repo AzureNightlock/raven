@@ -1,26 +1,43 @@
 import { RavenError } from "../errors.js";
 import { describe, tokenToSource } from "./tokenStream.js";
 
+import { DATA_TYPES } from "../language/types.js";
+
 export function parseStatement(stream) {
   const token = stream.peek();
+  const nextToken = stream.peek(1);
+  const nameToken = stream.peek(2);
+  const followingToken = stream.peek(3);
 
   if (token.type === "EOF") {
     throw new RavenError("Unexpected end of input", token);
   }
 
-  if (token.type === "KEYWORD" && token.value === "createElement") {
-    return parseCreateElement(stream);
+  if (token.type === "KEYWORD"){
+    if (token.value === "createElement") {
+      return parseCreateElement(stream);
+    }
+    // ex: int x
+    if (DATA_TYPES.has(token.value)) {
+      if (nextToken.type === "IDENTIFIER") {
+        return parseVariableAssignment(stream);
+      }
+    }
+
   }
 
   if (token.type === "IDENTIFIER") {
-    const member = stream.peek(2);
-    const nextSymbol = stream.peek(3);
-
-    if (nextSymbol.type === "SYMBOL" && nextSymbol.value === "EQUALS") {
+    if (
+      followingToken.type === "SYMBOL" &&
+      followingToken.value === "EQUALS"
+    ) {
       return parsePropertyAssignment(stream);
     }
 
-    if (member.type === "IDENTIFIER" && member.value.startsWith("on")) {
+    if (
+      nameToken.type === "IDENTIFIER" &&
+      nameToken.value.startsWith("on")
+    ) {
       return parseEventListener(stream);
     }
 
@@ -35,9 +52,12 @@ export function parseStatement(stream) {
 }
 
 export function parsePropertyAssignment(stream) {
-  // btn.textContent = 5
-  //  ↑        ↑       ↑
-  // object property value
+  /* 
+  EXAMPLE:
+  textContent = 5
+      ↑         ↑
+  property    value
+  */
 
   const object = stream.expect("IDENTIFIER");
 
@@ -116,10 +136,6 @@ export function parseCreateElement(stream) {
 
   stream.expect("SYMBOL", "RIGHT_PAREN");
 
-  stream.expect("KEYWORD", "as");
-
-  const alias = stream.expect("IDENTIFIER");
-
   const open = stream.expect("SYMBOL", "LEFT_BRACE");
 
   const body = [];
@@ -128,16 +144,24 @@ export function parseCreateElement(stream) {
     body.push(parseStatement(stream));
   }
 
-  if (stream.atEnd()) {
-    throw new RavenError(`Unclosed block for "${alias.value}"`, open, `This "{" is never closed.`);
-  }
-
   stream.expect("SYMBOL", "RIGHT_BRACE");
 
   return {
     type: "CreateElementStatement",
     tagName: tagName.value,
-    alias: alias.value,
     body,
   };
+}
+
+export function parseVariableAssignment(stream) {
+  stream.expect("KEYWORD", "int");
+  const varName = stream.expect("IDENTIFIER")
+  stream.expect("SYMBOL","EQUALS")
+  const value = stream.expect("NUMBER")
+
+  return {
+    type: "CreateIntegerVariable",
+    dataType: "int",
+    varName: varName.value
+  }
 }

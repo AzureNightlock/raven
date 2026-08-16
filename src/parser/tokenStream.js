@@ -1,14 +1,6 @@
 import { RavenError } from "../errors.js";
+import { SYMBOLS } from "../language/types.js";
 
-const SYMBOLS = {
-  DOT: ".",
-  LEFT_PAREN: "(",
-  RIGHT_PAREN: ")",
-  LEFT_BRACE: "{",
-  RIGHT_BRACE: "}",
-  EQUALS: "=",
-  GREATER_THAN: ">",
-};
 
 export function tokenToSource(token) {
   if (token.type === "STRING") {

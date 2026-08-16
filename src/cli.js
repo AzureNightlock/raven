@@ -21,6 +21,14 @@ const currentDirectory = path.dirname(
 const command = process.argv[2];
 const commands = new Set(["init","compile", "format", "lint"]);
 
+const version = (() => {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(root, "../package.json"), "utf-8")).version;
+  } catch {
+    return "0.0.0";
+  }
+})();
+
 if (!commands.has(command)) {
   console.error(
     `${red(bold("✕ unknown command"))} ${red(command ?? "<none>")}\n` +
@@ -31,6 +39,7 @@ if (!commands.has(command)) {
 
   process.exit(1);
 } else {
+  console.log(`${purple("raven")} ${dim(`v${version}`)}`);
   console.log(
     `${purple("raven")} ${dim("›")} ${bold(deepPurple(command))}`,
   );

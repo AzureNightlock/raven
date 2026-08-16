@@ -1,65 +1,20 @@
-const properties = new Set([
-  // All elements
-  "textContent",
-  "innerText",
-  "innerHTML",
-  "id",
-  "title",
-  "hidden",
-  "lang",
-  "dir",
-  "tabIndex",
-  "style",
-  "dataset",
+import { properties } from "../language/types.js";
 
-  // Forms
-  "value",
-  "name",
-  "type",
-  "placeholder",
-  "checked",
-  "disabled",
-  "required",
-  "readOnly",
-  "multiple",
-  "min",
-  "max",
-  "step",
-  "minLength",
-  "maxLength",
-  "pattern",
-  "autocomplete",
-
-  // Links and media
-  "href",
-  "target",
-  "download",
-  "rel",
-  "src",
-  "alt",
-  "width",
-  "height",
-
-  // Tables and lists
-  "colSpan",
-  "rowSpan",
-  "start",
-  "reversed",
-]);
-
+let elementId = 0;
 
 export function generateNode(node, lines, parent) {
   if (node.type === "CreateElementStatement") {
-    lines.push(`const ${node.alias} = document.createElement(${JSON.stringify(node.tagName)});`);
+    const elementName = `_rvn${elementId++}`;
+    lines.push(`const ${elementName} = document.createElement(${JSON.stringify(node.tagName)});`);
 
     lines.push("");
 
     for (const statement of node.body) {
-      generateNode(statement, lines, node.alias);
+      generateNode(statement, lines, elementName);
     }
 
     lines.push("");
-    lines.push(`${parent ?? "document.body"}.appendChild(${node.alias});`);
+    lines.push(`${parent ?? "document.body"}.appendChild(${elementName});`);
   }
 
   if (node.type === "PropertyAssignment") {
