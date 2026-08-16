@@ -52,9 +52,5 @@ export function generateNode(node, lines, currentElement) {
     lines.push(`});`);
   } else if (node.type === "CreateIntegerVariable") {
     lines.push(`let ${node.varName} = ${node.value}`);
-  } else {
-    throw new RavenError(
-      `Invalid Property. ${node.property} doesn't exist for ${currentElement}`,
-    );
   }
 }
