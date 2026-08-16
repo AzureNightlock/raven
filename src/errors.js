@@ -56,7 +56,9 @@ export function renderError(error, source, file = "<anonymous>") {
   }
 
   out.push(`${pad(line)} ${GLYPH.bar} ${text}`);
-  out.push(`${gutter} ${GLYPH.ann} ${indent}${red(GLYPH.under.repeat(caretLength))}`);
+  out.push(
+    `${gutter} ${GLYPH.ann} ${indent}${red(GLYPH.under.repeat(caretLength))}`,
+  );
 
   if (line < lines.length) {
     out.push(`${pad(line + 1)} ${GLYPH.bar} ${expandTabs(lines[line])}`);

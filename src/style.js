@@ -7,7 +7,8 @@ export const useUnicode =
     Boolean(process.env.WT_SESSION) ||
     Boolean(process.env.TERM_PROGRAM));
 
-const paint = (code) => (text) => (useColor ? `\x1b[${code}m${text}\x1b[0m` : text);
+const paint = (code) => (text) =>
+  useColor ? `\x1b[${code}m${text}\x1b[0m` : text;
 
 export const purple = paint("38;5;141");
 export const deepPurple = paint("38;5;99");

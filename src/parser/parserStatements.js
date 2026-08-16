@@ -1,26 +1,38 @@
 import { RavenError } from "../errors.js";
 import { describe, tokenToSource } from "./tokenStream.js";
 
+import { DATA_TYPES } from "../language/types.js";
+
 export function parseStatement(stream) {
   const token = stream.peek();
+  const nextToken = stream.peek(1);
+  const nameToken = stream.peek(2);
+  const followingToken = stream.peek(3);
 
   if (token.type === "EOF") {
     throw new RavenError("Unexpected end of input", token);
   }
 
-  if (token.type === "KEYWORD" && token.value === "createElement") {
-    return parseCreateElement(stream);
+  if (DATA_TYPES.has(token.value)) {
+    if (token.value === "html") {
+      if (nextToken.type === "IDENTIFIER") {
+        return parseCreateElement(stream);
+      }
+    }
+    // ex: int x
+    if (token.value === "int") {
+      if (nextToken.type === "IDENTIFIER") {
+        return parseVariableAssignment(stream);
+      }
+    }
   }
 
   if (token.type === "IDENTIFIER") {
-    const member = stream.peek(2);
-    const nextSymbol = stream.peek(3);
-
-    if (nextSymbol.type === "SYMBOL" && nextSymbol.value === "EQUALS") {
+    if (nextToken.type === "SYMBOL" && nextToken.value === "EQUALS") {
       return parsePropertyAssignment(stream);
     }
 
-    if (member.type === "IDENTIFIER" && member.value.startsWith("on")) {
+    if (nameToken.type === "IDENTIFIER" && nameToken.value.startsWith("on")) {
       return parseEventListener(stream);
     }
 
@@ -35,14 +47,12 @@ export function parseStatement(stream) {
 }
 
 export function parsePropertyAssignment(stream) {
-  // btn.textContent = 5
-  //  ↑        ↑       ↑
-  // object property value
-
-  const object = stream.expect("IDENTIFIER");
-
-  stream.expect("SYMBOL", "DOT");
-
+  /* 
+  EXAMPLE:
+  textContent = 5
+      ↑         ↑
+  property    value
+  */
   const property = stream.expect("IDENTIFIER");
 
   stream.expect("SYMBOL", "EQUALS");
@@ -65,7 +75,6 @@ export function parsePropertyAssignment(stream) {
 
   return {
     type: "PropertyAssignment",
-    object: object.value,
     property: property.value,
     value: value.value,
   };
@@ -108,17 +117,15 @@ export function parseEventListener(stream) {
 }
 
 export function parseCreateElement(stream) {
+  stream.expect("DATA_TYPE", "html");
+
+  const varName = stream.expect("IDENTIFIER");
+  stream.expect("SYMBOL", "EQUALS");
   stream.expect("KEYWORD", "createElement");
-
   stream.expect("SYMBOL", "LEFT_PAREN");
-
   const tagName = stream.expect("STRING");
 
   stream.expect("SYMBOL", "RIGHT_PAREN");
-
-  stream.expect("KEYWORD", "as");
-
-  const alias = stream.expect("IDENTIFIER");
 
   const open = stream.expect("SYMBOL", "LEFT_BRACE");
 
@@ -128,16 +135,26 @@ export function parseCreateElement(stream) {
     body.push(parseStatement(stream));
   }
 
-  if (stream.atEnd()) {
-    throw new RavenError(`Unclosed block for "${alias.value}"`, open, `This "{" is never closed.`);
-  }
-
   stream.expect("SYMBOL", "RIGHT_BRACE");
 
   return {
-    type: "CreateElementStatement",
+    type: "CreateHTMLElement",
     tagName: tagName.value,
-    alias: alias.value,
+    varName: varName.value,
     body,
+  };
+}
+
+export function parseVariableAssignment(stream) {
+  stream.expect("DATA_TYPE", "int");
+  const varName = stream.expect("IDENTIFIER");
+  stream.expect("SYMBOL", "EQUALS");
+  const value = stream.expect("NUMBER");
+
+  return {
+    type: "CreateIntegerVariable",
+    dataType: "int",
+    varName: varName.value,
+    value: value.value,
   };
 }

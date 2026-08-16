@@ -1,14 +1,5 @@
 import { RavenError } from "../errors.js";
-
-const SYMBOLS = {
-  DOT: ".",
-  LEFT_PAREN: "(",
-  RIGHT_PAREN: ")",
-  LEFT_BRACE: "{",
-  RIGHT_BRACE: "}",
-  EQUALS: "=",
-  GREATER_THAN: ">",
-};
+import { SYMBOLS } from "../language/types.js";
 
 export function tokenToSource(token) {
   if (token.type === "STRING") {
@@ -23,7 +14,9 @@ export function tokenToSource(token) {
 }
 
 export function describe(token) {
-  return token.type === "EOF" ? "the end of the file" : `"${tokenToSource(token)}"`;
+  return token.type === "EOF"
+    ? "the end of the file"
+    : `"${tokenToSource(token)}"`;
 }
 
 function label(type, value) {
@@ -68,8 +61,18 @@ export function createTokenStream(tokens) {
         );
       }
 
-      if (token.type !== type || (value !== undefined && token.value !== value)) {
-        throw new RavenError(`Expected ${label(type, value)}, but got ${describe(token)}`, token);
+      if (token.type !== type) {
+        throw new RavenError(
+          `Expected ${label(type, value)} of type ${type}, but got ${describe(token)} of type ${token.type}`,
+          token,
+        );
+      }
+
+      if (value !== undefined && token.value !== value) {
+        throw new RavenError(
+          `Expected ${label(type, value)}, but got ${describe(token)}`,
+          token,
+        );
       }
 
       return token;
@@ -78,7 +81,9 @@ export function createTokenStream(tokens) {
     match(type, value) {
       const token = this.peek();
 
-      return token.type === type && (value === undefined || token.value === value);
+      return (
+        token.type === type && (value === undefined || token.value === value)
+      );
     },
   };
 }

@@ -38,7 +38,7 @@ Initialise the project:
 raven init
 ```
 
-Compile the current Raven project:
+Compile the current project:
 
 ```bash
 raven compile

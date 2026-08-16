@@ -13,21 +13,15 @@ const cwd = process.cwd();
 const file = process.argv[3] ?? "src/page.rvn";
 const outputDir = path.join(cwd, "output");
 
-const version = (() => {
-  try {
-    return JSON.parse(fs.readFileSync(path.join(root, "../package.json"), "utf-8")).version;
-  } catch {
-    return "0.0.0";
-  }
-})();
-
 const TOTAL = 4;
 const LABEL_WIDTH = 24;
 let stage = 0;
 
 function step(label, run) {
   stage++;
-  process.stdout.write(`${dim(`[${stage}/${TOTAL}]`)} ${label.padEnd(LABEL_WIDTH)}`);
+  process.stdout.write(
+    `${dim(`[${stage}/${TOTAL}]`)} ${label.padEnd(LABEL_WIDTH)}`,
+  );
 
   try {
     const result = run();
@@ -45,8 +39,6 @@ function formatSize(bytes) {
 
 const started = performance.now();
 const source = fs.readFileSync(path.join(cwd, file), "utf-8");
-
-console.log(`${purple("raven")} ${dim(`v${version}`)}`);
 
 let written = [];
 
@@ -78,7 +70,10 @@ const elapsed = Math.round(performance.now() - started);
 
 console.log(`${green(GLYPH.ok)} ${bold("Compilation successful")}`);
 
-const nameWidth = Math.max(...written.map((target) => path.relative(root, target).length), 0);
+const nameWidth = Math.max(
+  ...written.map((target) => path.relative(root, target).length),
+  0,
+);
 
 for (const target of written) {
   const relative = path.relative(root, target).replace(/\\/g, "/");
