@@ -6,8 +6,6 @@ import { DATA_TYPES, EVENTS } from "../language/types.js";
 export function parseStatement(stream) {
   const token = stream.peek();
   const nextToken = stream.peek(1);
-  const nameToken = stream.peek(2);
-  const followingToken = stream.peek(3);
 
   if (token.type === "EOF") {
     throw new RavenError("Unexpected end of input", token);
@@ -125,7 +123,7 @@ export function parseCreateElement(stream) {
 
   stream.expect("SYMBOL", "RIGHT_PAREN");
 
-  const open = stream.expect("SYMBOL", "LEFT_BRACE");
+  stream.expect("SYMBOL", "LEFT_BRACE");
 
   const body = [];
 

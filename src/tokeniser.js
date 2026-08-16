@@ -1,8 +1,5 @@
 import fs from "fs";
-import { KEYWORDS, DATA_TYPES, EVENTS } from "./language/types.js";
-
-const source = fs.readFileSync("src/page.rvn", "utf-8").replace(/\r\n?/g, "\n");
-const tokens = tokenize(source);
+import { KEYWORDS, DATA_TYPES, EVENTS, ARITHMETIC_OPERATORS, COMPARISON_OPERATORS, LOGICAL_OPERATORS } from "./language/types.js";
 
 function isLetter(char) {
   return /[a-zA-Z]/.test(char);
@@ -38,9 +35,14 @@ export function tokenize(source) {
         } else if (KEYWORDS.has(word)) {
           type = "KEYWORD";
         } else if (EVENTS.has(word)) {
-          type = "EVENT"
-        }
-        else {
+          type = "EVENT";
+        } else if (ARITHMETIC_OPERATORS.has(word)) {
+          type = "ARITHMETIC_OPERATOR";
+        } else if (COMPARISON_OPERATORS.has(word)) {
+          type = "COMPARISON_OPERATOR";
+        } else if (LOGICAL_OPERATORS.has(word)) {
+          type = "LOGICAL_OPERATOR";
+        } else {
           type = "IDENTIFIER";
         }
 

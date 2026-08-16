@@ -76,7 +76,7 @@ const nameWidth = Math.max(
 );
 
 for (const target of written) {
-  const relative = path.relative(root, target).replace(/\\/g, "/");
+  const relative = path.relative(process.cwd(), target).replace(/\\/g, "/");
   const size = formatSize(fs.statSync(target).size);
   console.log(`  ${deepPurple(relative.padEnd(nameWidth + 2))}${dim(size)}`);
 }

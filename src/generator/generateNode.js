@@ -1,6 +1,5 @@
+import { RavenError } from "../errors.js";
 import { properties } from "../language/types.js";
-
-let elementId = 0;
 
 export function generateNode(node, lines, currentElement) {
   if (node.type === "CreateHTMLElement") {

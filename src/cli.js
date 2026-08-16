@@ -1,16 +1,11 @@
 #!/usr/bin/env node
 
 import { spawnSync } from "node:child_process";
+import fs from "fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { generateSetup } from "./generator/generator.js";
-import { GLYPH, purple, deepPurple, red, green, bold, dim } from "./style.js";
-
-const useColor =
-  process.stdout.isTTY && !process.env.NO_COLOR && process.env.TERM !== "dumb";
-
-const paint = (code) => (text) =>
-  useColor ? `\x1b[${code}m${text}\x1b[0m` : text;
+import { purple, deepPurple, red, bold, dim } from "./style.js";
 
 const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
 
@@ -19,10 +14,13 @@ const commands = new Set(["init", "compile", "format", "lint"]);
 
 const version = (() => {
   try {
-    return JSON.parse(
-      fs.readFileSync(path.join(root, "../package.json"), "utf-8"),
-    ).version;
-  } catch {
+    const packagePath = path.join(currentDirectory, "../package.json");
+
+    const packageJson = JSON.parse(fs.readFileSync(packagePath, "utf8"));
+
+    return packageJson.version;
+  } catch (err) {
+    console.error(err)
     return "0.0.0";
   }
 })();
