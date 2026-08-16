@@ -25,9 +25,7 @@ export function parseStatement(stream) {
     }
   }
   if (EVENTS.has(token.value)) {
-    if (token.value.startsWith("on")) {
-      return parseEventListener(stream);
-    }
+    return parseEventListener(stream);
   }
 
   if (token.type === "IDENTIFIER") {
@@ -36,7 +34,7 @@ export function parseStatement(stream) {
     }
 
     throw new RavenError(
-      `Expected a property assignment or event handler after "${token.value}"`,
+      `Expected a property assignment or event handler after "${token.value}`,
       token,
       `Write a html <property> = value or <event>(() => { ... })".`,
     );

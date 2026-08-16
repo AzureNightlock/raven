@@ -28,10 +28,7 @@ export const GLYPH = useUnicode
       under: "\u2500",
     }
   : {
-      feather: "",
-      chevron: ">",
       ok: "+",
-      fail: "x",
       mark: "x",
       bar: "|",
       ann: ":",

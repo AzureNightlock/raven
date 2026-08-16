@@ -6,7 +6,7 @@ import { tokenize } from "./tokeniser.js";
 import { parse } from "./parser/parserMain.js";
 import { generate } from "./generator/generator.js";
 import { reportAndExit } from "./errors.js";
-import { GLYPH, purple, deepPurple, red, green, bold, dim } from "./style.js";
+import { GLYPH, deepPurple, red, green, bold, dim } from "./style.js";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const cwd = process.cwd();
