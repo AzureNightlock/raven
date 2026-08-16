@@ -1,5 +1,5 @@
 import fs from "fs";
-import { KEYWORDS } from "./language/types.js";
+import { KEYWORDS, DATA_TYPES } from "./language/types.js";
 
 const source = fs.readFileSync("src/page.rvn", "utf-8").replace(/\r\n?/g, "\n");
 const tokens = tokenize(source);
@@ -21,7 +21,7 @@ export function tokenize(source) {
   while (i < source.length) {
     const char = source[i];
 
-    if (isLetter(char)) {
+    if (isLetter(char) || (word !== "" && /[0-9]/.test(char))) {
       if (word === "") {
         wordLine = line;
         wordColumn = column;
@@ -32,14 +32,22 @@ export function tokenize(source) {
     // KEYWORDS + IDENTIFIERS
     else {
       if (word !== "") {
+        let type;
+        if (DATA_TYPES.has(word)) {
+          type = "DATA_TYPE";
+        } else if (KEYWORDS.has(word)) {
+          type = "KEYWORD";
+        } else {
+          type = "IDENTIFIER";
+        }
+
         tokens.push({
-          type: KEYWORDS.has(word) ? "KEYWORD" : "IDENTIFIER",
+          type,
           value: word,
           line: wordLine,
           column: wordColumn,
           length: word.length,
         });
-
         word = "";
       } else if (char === '"') {
         // for string: "button"

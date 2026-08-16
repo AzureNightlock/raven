@@ -13,12 +13,14 @@ export function parseStatement(stream) {
     throw new RavenError("Unexpected end of input", token);
   }
 
-  if (token.type === "KEYWORD"){
-    if (token.value === "createElement") {
-      return parseCreateElement(stream);
+  if (DATA_TYPES.has(token.value)){
+    if (token.value === "html") {
+      if (nextToken.type === "IDENTIFIER"){
+        return parseCreateElement(stream);
+      }
     }
     // ex: int x
-    if (DATA_TYPES.has(token.value)) {
+    if (token.value === "int") {
       if (nextToken.type === "IDENTIFIER") {
         return parseVariableAssignment(stream);
       }
@@ -28,8 +30,8 @@ export function parseStatement(stream) {
 
   if (token.type === "IDENTIFIER") {
     if (
-      followingToken.type === "SYMBOL" &&
-      followingToken.value === "EQUALS"
+      nextToken.type === "SYMBOL" &&
+      nextToken.value === "EQUALS"
     ) {
       return parsePropertyAssignment(stream);
     }
@@ -58,11 +60,6 @@ export function parsePropertyAssignment(stream) {
       ↑         ↑
   property    value
   */
-
-  const object = stream.expect("IDENTIFIER");
-
-  stream.expect("SYMBOL", "DOT");
-
   const property = stream.expect("IDENTIFIER");
 
   stream.expect("SYMBOL", "EQUALS");
@@ -84,10 +81,9 @@ export function parsePropertyAssignment(stream) {
   }
 
   return {
-    type: "PropertyAssignment",
-    object: object.value,
-    property: property.value,
-    value: value.value,
+  type: "PropertyAssignment",
+  property: property.value,
+  value: value.value,
   };
 }
 
@@ -128,10 +124,12 @@ export function parseEventListener(stream) {
 }
 
 export function parseCreateElement(stream) {
+  stream.expect("DATA_TYPE", "html");
+  
+  const varName = stream.expect("IDENTIFIER");
+  stream.expect("SYMBOL", "EQUALS");
   stream.expect("KEYWORD", "createElement");
-
   stream.expect("SYMBOL", "LEFT_PAREN");
-
   const tagName = stream.expect("STRING");
 
   stream.expect("SYMBOL", "RIGHT_PAREN");
@@ -147,14 +145,15 @@ export function parseCreateElement(stream) {
   stream.expect("SYMBOL", "RIGHT_BRACE");
 
   return {
-    type: "CreateElementStatement",
+    type: "CreateHTMLElement",
     tagName: tagName.value,
+    varName: varName.value,
     body,
   };
 }
 
 export function parseVariableAssignment(stream) {
-  stream.expect("KEYWORD", "int");
+  stream.expect("DATA_TYPE", "int");
   const varName = stream.expect("IDENTIFIER")
   stream.expect("SYMBOL","EQUALS")
   const value = stream.expect("NUMBER")
@@ -162,6 +161,7 @@ export function parseVariableAssignment(stream) {
   return {
     type: "CreateIntegerVariable",
     dataType: "int",
-    varName: varName.value
+    varName: varName.value,
+    value: value.value
   }
 }

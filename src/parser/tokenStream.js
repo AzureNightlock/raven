@@ -60,8 +60,18 @@ export function createTokenStream(tokens) {
         );
       }
 
-      if (token.type !== type || (value !== undefined && token.value !== value)) {
-        throw new RavenError(`Expected ${label(type, value)}, but got ${describe(token)}`, token);
+      if (token.type !== type) {
+        throw new RavenError(
+          `Expected ${label(type, value)} of type ${type}, but got ${describe(token)} of type ${token.type}`,
+          token,
+        );
+      }
+
+      if (value !== undefined && token.value !== value) {
+        throw new RavenError(
+          `Expected ${label(type, value)}, but got ${describe(token)}`,
+          token,
+        );
       }
 
       return token;

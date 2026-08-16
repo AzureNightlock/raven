@@ -2,35 +2,39 @@ import { properties } from "../language/types.js";
 
 let elementId = 0;
 
-export function generateNode(node, lines, parent) {
-  if (node.type === "CreateElementStatement") {
-    const elementName = `_rvn${elementId++}`;
-    lines.push(`const ${elementName} = document.createElement(${JSON.stringify(node.tagName)});`);
-
-    lines.push("");
+export function generateNode(node, lines, currentElement) {
+  if (node.type === "CreateHTMLElement") {
+    const varName = node.varName;
+    lines.push(
+      `const ${varName} = document.createElement(${JSON.stringify(node.tagName)});`
+    );
 
     for (const statement of node.body) {
-      generateNode(statement, lines, elementName);
+      generateNode(statement, lines, varName);
     }
 
-    lines.push("");
-    lines.push(`${parent ?? "document.body"}.appendChild(${elementName});`);
+    lines.push(
+      `${currentElement ?? "document.body"}.appendChild(${varName});`
+    );
   }
 
   if (node.type === "PropertyAssignment") {
     if (properties.has(node.property)) {
-      lines.push(`${node.object}.${node.property} = ${JSON.stringify(node.value)};`);
+      lines.push(`${currentElement}.${node.property} = ${JSON.stringify(node.value)};`);
     } else if (node.property === "class") {
-      lines.push(`${node.object}.className = ${JSON.stringify(node.value)};`);
+      lines.push(`${currentElement}.className = ${JSON.stringify(node.value)};`);
     } else {
-      throw new RavenError(`Invalid Property. ${node.property} doesn't exist for ${node.object}`);
+      throw new RavenError(`Invalid Property. ${node.property} doesn't exist for ${currentElement}`);
     }
   } else if (node.type === "EventListener") {
     const eventName = node.eventType.slice(2).toLowerCase();
 
-    lines.push(`${node.object}.addEventListener(${JSON.stringify(eventName)}, () => {`);
+    lines.push(`${currentElement}.addEventListener(${JSON.stringify(eventName)}, () => {`);
 
     lines.push(`  ${node.action};`);
     lines.push(`});`);
   } 
+  else if (node.type === "CreateIntegerVariable") {
+    lines.push(`let ${node.varName} = ${node.value}`)
+  }
 }

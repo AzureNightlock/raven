@@ -2,6 +2,7 @@ export const DATA_TYPES = new Set([
   "int",
   "str",
   "bool",
+  "html",
 ]);
 
 export const SYMBOLS = {
@@ -63,4 +64,4 @@ export const properties = new Set([
   "reversed",
 ]);
 
-export const KEYWORDS = new Set(["createElement","int","str","bool"]);
+export const KEYWORDS = new Set(["createElement","if","while","for","func"]);
