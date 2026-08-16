@@ -27,9 +27,9 @@ A local installation will not make the `raven` command available everywhere on y
 ## Why use Raven?
 * Syntax is easy to read and write and is similar to actual coding.
 * Projects are very organised due to the fixed folder structure.
-* Generated outputs are understandable and debugging is incredably easy.
+* Generated outputs are understandable and debugging is incredibly easy.
 * Error outputs are clean and clear
-* Has 0 dependancies. So no package-lock.json, 1000+ node_modules, no supply-chain attacks
+* Has 0 dependencies. So no package-lock.json, 1000+ node_modules, no supply-chain attacks
 
 ## Commands
 

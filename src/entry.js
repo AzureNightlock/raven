@@ -6,7 +6,7 @@ import { tokenize } from "./tokeniser.js";
 import { parse } from "./parser/parserMain.js";
 import { generate } from "./generator/generator.js";
 import { reportAndExit } from "./errors.js";
-import { GLYPH, purple, deepPurple, red, green, bold, dim } from "./style.js";
+import { GLYPH, deepPurple, red, green, bold, dim } from "./style.js";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const cwd = process.cwd();
@@ -76,7 +76,7 @@ const nameWidth = Math.max(
 );
 
 for (const target of written) {
-  const relative = path.relative(root, target).replace(/\\/g, "/");
+  const relative = path.relative(process.cwd(), target).replace(/\\/g, "/");
   const size = formatSize(fs.statSync(target).size);
   console.log(`  ${deepPurple(relative.padEnd(nameWidth + 2))}${dim(size)}`);
 }

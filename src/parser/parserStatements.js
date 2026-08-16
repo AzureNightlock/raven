@@ -1,13 +1,11 @@
 import { RavenError } from "../errors.js";
 import { describe, tokenToSource } from "./tokenStream.js";
 
-import { DATA_TYPES } from "../language/types.js";
+import { DATA_TYPES, EVENTS } from "../language/types.js";
 
 export function parseStatement(stream) {
   const token = stream.peek();
   const nextToken = stream.peek(1);
-  const nameToken = stream.peek(2);
-  const followingToken = stream.peek(3);
 
   if (token.type === "EOF") {
     throw new RavenError("Unexpected end of input", token);
@@ -26,20 +24,19 @@ export function parseStatement(stream) {
       }
     }
   }
+  if (EVENTS.has(token.value)) {
+    return parseEventListener(stream);
+  }
 
   if (token.type === "IDENTIFIER") {
     if (nextToken.type === "SYMBOL" && nextToken.value === "EQUALS") {
       return parsePropertyAssignment(stream);
     }
 
-    if (nameToken.type === "IDENTIFIER" && nameToken.value.startsWith("on")) {
-      return parseEventListener(stream);
-    }
-
     throw new RavenError(
-      `Expected a property assignment or event handler after "${token.value}"`,
+      `Expected a property assignment or event handler after "${token.value}`,
       token,
-      `Write "${token.value}.property = value" or "${token.value}.onEvent(() => { ... })".`,
+      `Write a html <property> = value or <event>(() => { ... })".`,
     );
   }
 
@@ -81,9 +78,7 @@ export function parsePropertyAssignment(stream) {
 }
 
 export function parseEventListener(stream) {
-  const object = stream.expect("IDENTIFIER");
-  stream.expect("SYMBOL", "DOT");
-  const event = stream.expect("IDENTIFIER");
+  const event = stream.expect("EVENT");
   stream.expect("SYMBOL", "LEFT_PAREN");
   stream.expect("SYMBOL", "LEFT_PAREN");
   stream.expect("SYMBOL", "RIGHT_PAREN");
@@ -110,9 +105,8 @@ export function parseEventListener(stream) {
 
   return {
     type: "EventListener",
-    object: object.value,
     eventType: event.value,
-    action: action,
+    action,
   };
 }
 
@@ -127,7 +121,7 @@ export function parseCreateElement(stream) {
 
   stream.expect("SYMBOL", "RIGHT_PAREN");
 
-  const open = stream.expect("SYMBOL", "LEFT_BRACE");
+  stream.expect("SYMBOL", "LEFT_BRACE");
 
   const body = [];
 

@@ -66,3 +66,12 @@ export const KEYWORDS = new Set([
   "for",
   "func",
 ]);
+
+export const EVENTS = new Set(["onClick"]);
+
+// keep this for time being
+export const ARITHMETIC_OPERATORS = new Set(["+", "-", "*", "/", "%", "**"]);
+
+export const COMPARISON_OPERATORS = new Set(["==", "!=", ">", "<", ">=", "<="]);
+
+export const LOGICAL_OPERATORS = new Set(["&&", "||", "!"]);

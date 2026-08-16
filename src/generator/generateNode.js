@@ -1,6 +1,5 @@
+import { RavenError } from "../errors.js";
 import { properties } from "../language/types.js";
-
-let elementId = 0;
 
 export function generateNode(node, lines, currentElement) {
   if (node.type === "CreateHTMLElement") {
@@ -17,6 +16,12 @@ export function generateNode(node, lines, currentElement) {
   }
 
   if (node.type === "PropertyAssignment") {
+    if (!currentElement) {
+      throw new RavenError(
+        `Property "${node.property}" property must be inside an html element`,
+      );
+    }
+
     if (properties.has(node.property)) {
       lines.push(
         `${currentElement}.${node.property} = ${JSON.stringify(node.value)};`,
@@ -31,6 +36,12 @@ export function generateNode(node, lines, currentElement) {
       );
     }
   } else if (node.type === "EventListener") {
+    if (!currentElement) {
+      throw new RavenError(
+        `"${node.eventType}" event must be inside an html element`,
+      );
+    }
+
     const eventName = node.eventType.slice(2).toLowerCase();
 
     lines.push(
