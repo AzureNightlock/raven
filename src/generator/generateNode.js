@@ -16,6 +16,12 @@ export function generateNode(node, lines, currentElement) {
   }
 
   if (node.type === "PropertyAssignment") {
+    if (!currentElement) {
+      throw new RavenError(
+        `Property "${node.property}" property must be inside an html element`,
+      );
+    }
+
     if (properties.has(node.property)) {
       lines.push(
         `${currentElement}.${node.property} = ${JSON.stringify(node.value)};`,
@@ -30,6 +36,12 @@ export function generateNode(node, lines, currentElement) {
       );
     }
   } else if (node.type === "EventListener") {
+    if (!currentElement) {
+      throw new RavenError(
+        `"${node.eventType}" event must be inside an html element`,
+      );
+    }
+
     const eventName = node.eventType.slice(2).toLowerCase();
 
     lines.push(
@@ -40,5 +52,9 @@ export function generateNode(node, lines, currentElement) {
     lines.push(`});`);
   } else if (node.type === "CreateIntegerVariable") {
     lines.push(`let ${node.varName} = ${node.value}`);
+  } else {
+    throw new RavenError(
+      `Invalid Property. ${node.property} doesn't exist for ${currentElement}`,
+    );
   }
 }

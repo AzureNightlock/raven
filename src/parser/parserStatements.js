@@ -38,7 +38,7 @@ export function parseStatement(stream) {
     throw new RavenError(
       `Expected a property assignment or event handler after "${token.value}"`,
       token,
-      `Write "${token.value}.property = value" or "${token.value}.onEvent(() => { ... })".`,
+      `Write a html <property> = value or <event>(() => { ... })".`,
     );
   }
 
