@@ -15,7 +15,6 @@ const commands = new Set(["init", "compile", "format", "lint"]);
 const version = (() => {
   try {
     const packagePath = path.join(currentDirectory, "../package.json");
-
     const packageJson = JSON.parse(fs.readFileSync(packagePath, "utf8"));
 
     return packageJson.version;

@@ -1,7 +1,7 @@
-export const useColor =
+const useColor =
   process.stdout.isTTY && !process.env.NO_COLOR && process.env.TERM !== "dumb";
 
-export const useUnicode =
+const useUnicode =
   process.env.TERM !== "dumb" &&
   (process.platform !== "win32" ||
     Boolean(process.env.WT_SESSION) ||
@@ -19,10 +19,7 @@ export const dim = paint("2");
 
 export const GLYPH = useUnicode
   ? {
-      feather: "\u{1FAB6}",
-      chevron: "\u203A",
       ok: "\u2713",
-      fail: "\u2715",
       mark: "x",
       bar: "\u2502",
       ann: "\u00B7",

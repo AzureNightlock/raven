@@ -1,4 +1,3 @@
-import fs from "fs";
 import { KEYWORDS, DATA_TYPES, EVENTS, ARITHMETIC_OPERATORS, COMPARISON_OPERATORS, LOGICAL_OPERATORS } from "./language/types.js";
 
 function isLetter(char) {

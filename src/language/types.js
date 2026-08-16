@@ -69,6 +69,7 @@ export const KEYWORDS = new Set([
 
 export const EVENTS = new Set(["onClick"]);
 
+// keep this for time being
 export const ARITHMETIC_OPERATORS = new Set(["+", "-", "*", "/", "%", "**"]);
 
 export const COMPARISON_OPERATORS = new Set(["==", "!=", ">", "<", ">=", "<="]);
