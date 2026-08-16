@@ -32,7 +32,7 @@ export function parseStatement(stream) {
       return parsePropertyAssignment(stream);
     }
 
-    if (nameToken.type === "IDENTIFIER" && nameToken.value.startsWith("on")) {
+    if (token.value.startsWith("on")) {
       return parseEventListener(stream);
     }
 
@@ -81,8 +81,6 @@ export function parsePropertyAssignment(stream) {
 }
 
 export function parseEventListener(stream) {
-  const object = stream.expect("IDENTIFIER");
-  stream.expect("SYMBOL", "DOT");
   const event = stream.expect("IDENTIFIER");
   stream.expect("SYMBOL", "LEFT_PAREN");
   stream.expect("SYMBOL", "LEFT_PAREN");
@@ -110,9 +108,8 @@ export function parseEventListener(stream) {
 
   return {
     type: "EventListener",
-    object: object.value,
     eventType: event.value,
-    action: action,
+    action,
   };
 }
 
