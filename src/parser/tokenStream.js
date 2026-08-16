@@ -1,7 +1,6 @@
 import { RavenError } from "../errors.js";
 import { SYMBOLS } from "../language/types.js";
 
-
 export function tokenToSource(token) {
   if (token.type === "STRING") {
     return JSON.stringify(token.value);
@@ -15,7 +14,9 @@ export function tokenToSource(token) {
 }
 
 export function describe(token) {
-  return token.type === "EOF" ? "the end of the file" : `"${tokenToSource(token)}"`;
+  return token.type === "EOF"
+    ? "the end of the file"
+    : `"${tokenToSource(token)}"`;
 }
 
 function label(type, value) {
@@ -80,7 +81,9 @@ export function createTokenStream(tokens) {
     match(type, value) {
       const token = this.peek();
 
-      return token.type === type && (value === undefined || token.value === value);
+      return (
+        token.type === type && (value === undefined || token.value === value)
+      );
     },
   };
 }

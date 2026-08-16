@@ -81,13 +81,37 @@ export function tokenize(source) {
       // --------------------
       // SYMBOLS
       if (char === "(") {
-        tokens.push({ type: "SYMBOL", value: "LEFT_PAREN", line, column, length: 1 });
+        tokens.push({
+          type: "SYMBOL",
+          value: "LEFT_PAREN",
+          line,
+          column,
+          length: 1,
+        });
       } else if (char === ")") {
-        tokens.push({ type: "SYMBOL", value: "RIGHT_PAREN", line, column, length: 1 });
+        tokens.push({
+          type: "SYMBOL",
+          value: "RIGHT_PAREN",
+          line,
+          column,
+          length: 1,
+        });
       } else if (char === "{") {
-        tokens.push({ type: "SYMBOL", value: "LEFT_BRACE", line, column, length: 1 });
+        tokens.push({
+          type: "SYMBOL",
+          value: "LEFT_BRACE",
+          line,
+          column,
+          length: 1,
+        });
       } else if (char === "}") {
-        tokens.push({ type: "SYMBOL", value: "RIGHT_BRACE", line, column, length: 1 });
+        tokens.push({
+          type: "SYMBOL",
+          value: "RIGHT_BRACE",
+          line,
+          column,
+          length: 1,
+        });
       } else if (char === ".") {
         tokens.push({ type: "SYMBOL", value: "DOT", line, column, length: 1 });
       } else if (char === "=" && source[i + 1] === ">") {

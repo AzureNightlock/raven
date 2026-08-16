@@ -13,9 +13,9 @@ export function parseStatement(stream) {
     throw new RavenError("Unexpected end of input", token);
   }
 
-  if (DATA_TYPES.has(token.value)){
+  if (DATA_TYPES.has(token.value)) {
     if (token.value === "html") {
-      if (nextToken.type === "IDENTIFIER"){
+      if (nextToken.type === "IDENTIFIER") {
         return parseCreateElement(stream);
       }
     }
@@ -25,21 +25,14 @@ export function parseStatement(stream) {
         return parseVariableAssignment(stream);
       }
     }
-
   }
 
   if (token.type === "IDENTIFIER") {
-    if (
-      nextToken.type === "SYMBOL" &&
-      nextToken.value === "EQUALS"
-    ) {
+    if (nextToken.type === "SYMBOL" && nextToken.value === "EQUALS") {
       return parsePropertyAssignment(stream);
     }
 
-    if (
-      nameToken.type === "IDENTIFIER" &&
-      nameToken.value.startsWith("on")
-    ) {
+    if (nameToken.type === "IDENTIFIER" && nameToken.value.startsWith("on")) {
       return parseEventListener(stream);
     }
 
@@ -81,9 +74,9 @@ export function parsePropertyAssignment(stream) {
   }
 
   return {
-  type: "PropertyAssignment",
-  property: property.value,
-  value: value.value,
+    type: "PropertyAssignment",
+    property: property.value,
+    value: value.value,
   };
 }
 
@@ -125,7 +118,7 @@ export function parseEventListener(stream) {
 
 export function parseCreateElement(stream) {
   stream.expect("DATA_TYPE", "html");
-  
+
   const varName = stream.expect("IDENTIFIER");
   stream.expect("SYMBOL", "EQUALS");
   stream.expect("KEYWORD", "createElement");
@@ -154,14 +147,14 @@ export function parseCreateElement(stream) {
 
 export function parseVariableAssignment(stream) {
   stream.expect("DATA_TYPE", "int");
-  const varName = stream.expect("IDENTIFIER")
-  stream.expect("SYMBOL","EQUALS")
-  const value = stream.expect("NUMBER")
+  const varName = stream.expect("IDENTIFIER");
+  stream.expect("SYMBOL", "EQUALS");
+  const value = stream.expect("NUMBER");
 
   return {
     type: "CreateIntegerVariable",
     dataType: "int",
     varName: varName.value,
-    value: value.value
-  }
+    value: value.value,
+  };
 }

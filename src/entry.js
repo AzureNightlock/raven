@@ -19,7 +19,9 @@ let stage = 0;
 
 function step(label, run) {
   stage++;
-  process.stdout.write(`${dim(`[${stage}/${TOTAL}]`)} ${label.padEnd(LABEL_WIDTH)}`);
+  process.stdout.write(
+    `${dim(`[${stage}/${TOTAL}]`)} ${label.padEnd(LABEL_WIDTH)}`,
+  );
 
   try {
     const result = run();
@@ -37,8 +39,6 @@ function formatSize(bytes) {
 
 const started = performance.now();
 const source = fs.readFileSync(path.join(cwd, file), "utf-8");
-
-
 
 let written = [];
 
@@ -70,7 +70,10 @@ const elapsed = Math.round(performance.now() - started);
 
 console.log(`${green(GLYPH.ok)} ${bold("Compilation successful")}`);
 
-const nameWidth = Math.max(...written.map((target) => path.relative(root, target).length), 0);
+const nameWidth = Math.max(
+  ...written.map((target) => path.relative(root, target).length),
+  0,
+);
 
 for (const target of written) {
   const relative = path.relative(root, target).replace(/\\/g, "/");
