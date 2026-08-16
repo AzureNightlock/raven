@@ -1,7 +1,7 @@
 import { RavenError } from "../errors.js";
 import { describe, tokenToSource } from "./tokenStream.js";
 
-import { DATA_TYPES } from "../language/types.js";
+import { DATA_TYPES, EVENTS } from "../language/types.js";
 
 export function parseStatement(stream) {
   const token = stream.peek();
@@ -26,14 +26,15 @@ export function parseStatement(stream) {
       }
     }
   }
+  if (EVENTS.has(token.value)) {
+    if (token.value.startsWith("on")) {
+      return parseEventListener(stream);
+    }
+  }
 
   if (token.type === "IDENTIFIER") {
     if (nextToken.type === "SYMBOL" && nextToken.value === "EQUALS") {
       return parsePropertyAssignment(stream);
-    }
-
-    if (token.value.startsWith("on")) {
-      return parseEventListener(stream);
     }
 
     throw new RavenError(
@@ -81,7 +82,7 @@ export function parsePropertyAssignment(stream) {
 }
 
 export function parseEventListener(stream) {
-  const event = stream.expect("IDENTIFIER");
+  const event = stream.expect("EVENT");
   stream.expect("SYMBOL", "LEFT_PAREN");
   stream.expect("SYMBOL", "LEFT_PAREN");
   stream.expect("SYMBOL", "RIGHT_PAREN");

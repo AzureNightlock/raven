@@ -66,3 +66,5 @@ export const KEYWORDS = new Set([
   "for",
   "func",
 ]);
+
+export const EVENTS = new Set(["onClick"])

@@ -1,5 +1,5 @@
 import fs from "fs";
-import { KEYWORDS, DATA_TYPES } from "./language/types.js";
+import { KEYWORDS, DATA_TYPES, EVENTS } from "./language/types.js";
 
 const source = fs.readFileSync("src/page.rvn", "utf-8").replace(/\r\n?/g, "\n");
 const tokens = tokenize(source);
@@ -37,7 +37,10 @@ export function tokenize(source) {
           type = "DATA_TYPE";
         } else if (KEYWORDS.has(word)) {
           type = "KEYWORD";
-        } else {
+        } else if (EVENTS.has(word)) {
+          type = "EVENT"
+        }
+        else {
           type = "IDENTIFIER";
         }
 
