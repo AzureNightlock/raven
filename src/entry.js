@@ -6,7 +6,8 @@ import { tokenize } from "./tokeniser.js";
 import { parse } from "./parser/parserMain.js";
 import { generate } from "./generator/generator.js";
 import { reportAndExit } from "./errors.js";
-import { GLYPH, deepPurple, red, green, bold, dim } from "./style.js";
+import { GLYPH, deepPurple, red, green, bold, dim } from "../style.js";
+import { printStage } from "./cli/cliUtils.js";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const cwd = process.cwd();
@@ -14,24 +15,8 @@ const file = process.argv[3] ?? "src/page.rvn";
 const outputDir = path.join(cwd, "output");
 
 const TOTAL = 4;
-const LABEL_WIDTH = 24;
 let stage = 0;
-
-function step(label, run) {
-  stage++;
-  process.stdout.write(
-    `${dim(`[${stage}/${TOTAL}]`)} ${label.padEnd(LABEL_WIDTH)}`,
-  );
-
-  try {
-    const result = run();
-    process.stdout.write(`${green("done")}\n`);
-    return result;
-  } catch (error) {
-    process.stdout.write(`${red("fail")}\n`);
-    throw error;
-  }
-}
+let writtenFiles = [];
 
 function formatSize(bytes) {
   return `${(bytes / 1000).toFixed(2)} kB`;
@@ -40,25 +25,23 @@ function formatSize(bytes) {
 const started = performance.now();
 const source = fs.readFileSync(path.join(cwd, file), "utf-8");
 
-let written = [];
+function runStage(message, fn) {
+  return printStage(message, fn, ++stage, TOTAL);
+}
 
 try {
-  const tokens = step("Tokenizing source", () => tokenize(source));
-  const ast = step("Building AST", () => parse(tokens));
-  const output = step("Generating JavaScript", () => generate(ast));
+  const tokens = runStage("Tokenizing source", () => tokenize(source));
+  const ast = runStage("Building AST", () => parse(tokens));
+  const output = runStage("Generating JavaScript", () => generate(ast));
 
-  written = step("Writing output", () => {
-    if (!output) {
-      return ["index.html", "script.js"]
-        .map((name) => path.join(outputDir, name))
-        .filter((target) => fs.existsSync(target));
-    }
-
+  writtenFiles = runStage("Writing output", () => {
     fs.mkdirSync(outputDir, { recursive: true });
 
     return Object.entries(output).map(([name, contents]) => {
       const target = path.join(outputDir, name);
+
       fs.writeFileSync(target, contents);
+
       return target;
     });
   });
