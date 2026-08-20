@@ -10,7 +10,6 @@ export function getVersion(cwd) {
     return packageJson.version;
   } catch (err) {
     console.error(err);
-    console.log(err);
     return "0.0.0";
   }
 }
@@ -34,4 +33,17 @@ export function printStage(
     process.stdout.write(`${red("fail")}\n`);
     throw error;
   }
+}
+
+export function getFileSizes(filePaths) {
+  return filePaths.map((file) => {
+    const filePath = path.resolve(file);
+    try {
+      const stats = fs.statSync(filePath);
+      return { file, size: stats.size };
+    } catch (err) {
+      console.error(err)
+      return { file, size: null };
+    }
+  });
 }

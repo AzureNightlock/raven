@@ -1,7 +1,7 @@
 import { RavenError } from "../errors.js";
 import { properties } from "../language/types.js";
 
-export function generateNode(node, lines, currentElement) {
+export function generateNode(node, lines, currentElement, currentTagName) {
   if (node.type === "CreateHTMLElement") {
     const varName = node.varName;
     lines.push(
@@ -9,13 +9,11 @@ export function generateNode(node, lines, currentElement) {
     );
 
     for (const statement of node.body) {
-      generateNode(statement, lines, varName);
+      generateNode(statement, lines, varName, node.tagName);
     }
 
     lines.push(`${currentElement ?? "document.body"}.appendChild(${varName});`);
-  }
-
-  if (node.type === "PropertyAssignment") {
+  } else if (node.type === "PropertyAssignment") {
     if (!currentElement) {
       throw new RavenError(
         `Property "${node.property}" property must be inside an html element`,
@@ -32,7 +30,7 @@ export function generateNode(node, lines, currentElement) {
       );
     } else {
       throw new RavenError(
-        `Invalid Property. ${node.property} doesn't exist for ${currentElement}`,
+        `Invalid property "${node.property}" for <${currentTagName}> element "${currentElement}"`
       );
     }
   } else if (node.type === "EventListener") {
@@ -51,6 +49,8 @@ export function generateNode(node, lines, currentElement) {
     lines.push(`  ${node.action};`);
     lines.push(`});`);
   } else if (node.type === "CreateIntegerVariable") {
-    lines.push(`let ${node.varName} = ${node.value}`);
+    lines.push(`let ${node.varName} = ${node.value};`);
+  } else {
+    throw new RavenError(`Unknown node type: ${node.type}`);
   }
 }

@@ -5,7 +5,7 @@ import { parse } from "./parser/parserMain.js";
 import { generate, generateJavaScript } from "./generator/generator.js";
 import { reportAndExit } from "./errors.js";
 import { GLYPH, green, bold, dim } from "./style.js";
-import { printStage } from "./cli/cliUtils.js";
+import { getFileSizes, printStage } from "./cli/cliUtils.js";
 
 const cwd = process.cwd();
 const file = process.argv[3] ?? "src/page.rvn";
@@ -30,7 +30,15 @@ try {
   const javascript = runStage("Generating JavaScript", () =>
     generateJavaScript(ast),
   );
-  runStage("Generating Files", () => generate(javascript));
+  const filePaths = runStage("Generating Files", () => generate(javascript));
+  const fileSizesObject = getFileSizes(filePaths);
+
+  for (const { file, size } of fileSizesObject) {
+    const icon = size != null ? green("✓") : red("✕");
+    const label = size != null ? formatSize(size) : "missing";
+    console.log(`${icon} ${file} ${dim(label)}`);
+  }
+
 } catch (error) {
   reportAndExit(error, source, file);
 }
