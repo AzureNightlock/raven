@@ -1,37 +1,17 @@
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
-
 import { tokenize } from "./tokeniser.js";
 import { parse } from "./parser/parserMain.js";
-import { generate } from "./generator/generator.js";
+import { generate, generateJavaScript } from "./generator/generator.js";
 import { reportAndExit } from "./errors.js";
-import { GLYPH, deepPurple, red, green, bold, dim } from "./style.js";
+import { GLYPH, green, red, bold, dim } from "./style.js";
+import { getFileSizes, printStage } from "./cli/cliUtils.js";
 
-const root = path.dirname(fileURLToPath(import.meta.url));
 const cwd = process.cwd();
 const file = process.argv[3] ?? "src/page.rvn";
-const outputDir = path.join(cwd, "output");
 
 const TOTAL = 4;
-const LABEL_WIDTH = 24;
 let stage = 0;
-
-function step(label, run) {
-  stage++;
-  process.stdout.write(
-    `${dim(`[${stage}/${TOTAL}]`)} ${label.padEnd(LABEL_WIDTH)}`,
-  );
-
-  try {
-    const result = run();
-    process.stdout.write(`${green("done")}\n`);
-    return result;
-  } catch (error) {
-    process.stdout.write(`${red("fail")}\n`);
-    throw error;
-  }
-}
 
 function formatSize(bytes) {
   return `${(bytes / 1000).toFixed(2)} kB`;
@@ -40,45 +20,31 @@ function formatSize(bytes) {
 const started = performance.now();
 const source = fs.readFileSync(path.join(cwd, file), "utf-8");
 
-let written = [];
+function runStage(message, fn) {
+  return printStage(message, fn, ++stage, TOTAL);
+}
 
 try {
-  const tokens = step("Tokenizing source", () => tokenize(source));
-  const ast = step("Building AST", () => parse(tokens));
-  const output = step("Generating JavaScript", () => generate(ast));
+  const tokens = runStage("Tokenizing source", () => tokenize(source));
+  const ast = runStage("Building AST", () => parse(tokens));
+  const javascript = runStage("Generating JavaScript", () =>
+    generateJavaScript(ast),
+  );
+  const filePaths = runStage("Generating Files", () => generate(javascript));
+  const fileSizesObject = getFileSizes(filePaths);
 
-  written = step("Writing output", () => {
-    if (!output) {
-      return ["index.html", "script.js"]
-        .map((name) => path.join(outputDir, name))
-        .filter((target) => fs.existsSync(target));
-    }
+  for (const { file, size } of fileSizesObject) {
+    const icon = size != null ? green("✓") : red("✕");
+    const label = size != null ? formatSize(size) : "missing";
+    console.log(`${icon} ${file} ${dim(label)}`);
+  }
 
-    fs.mkdirSync(outputDir, { recursive: true });
-
-    return Object.entries(output).map(([name, contents]) => {
-      const target = path.join(outputDir, name);
-      fs.writeFileSync(target, contents);
-      return target;
-    });
-  });
 } catch (error) {
   reportAndExit(error, source, file);
 }
 
 const elapsed = Math.round(performance.now() - started);
 
-console.log(`${green(GLYPH.ok)} ${bold("Compilation successful")}`);
-
-const nameWidth = Math.max(
-  ...written.map((target) => path.relative(root, target).length),
-  0,
+console.log(
+  `${green(GLYPH.ok)} ${bold("Compilation successful")} ${dim(`in ${elapsed}ms`)}`,
 );
-
-for (const target of written) {
-  const relative = path.relative(process.cwd(), target).replace(/\\/g, "/");
-  const size = formatSize(fs.statSync(target).size);
-  console.log(`  ${deepPurple(relative.padEnd(nameWidth + 2))}${dim(size)}`);
-}
-
-console.log(`${green(GLYPH.ok)} compiled in ${bold(`${elapsed}ms`)}`);

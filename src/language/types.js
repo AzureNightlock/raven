@@ -75,3 +75,5 @@ export const ARITHMETIC_OPERATORS = new Set(["+", "-", "*", "/", "%", "**"]);
 export const COMPARISON_OPERATORS = new Set(["==", "!=", ">", "<", ">=", "<="]);
 
 export const LOGICAL_OPERATORS = new Set(["&&", "||", "!"]);
+
+export const commands = new Set(["init", "compile", "format", "lint"]);
