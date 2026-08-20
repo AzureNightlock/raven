@@ -4,7 +4,7 @@ import { tokenize } from "./tokeniser.js";
 import { parse } from "./parser/parserMain.js";
 import { generate, generateJavaScript } from "./generator/generator.js";
 import { reportAndExit } from "./errors.js";
-import { GLYPH, green, bold, dim } from "./style.js";
+import { GLYPH, green, red, bold, dim } from "./style.js";
 import { getFileSizes, printStage } from "./cli/cliUtils.js";
 
 const cwd = process.cwd();
