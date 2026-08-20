@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { generateNode } from "./generateNode.js";
 
-export function generate(ast) {
+export function generate(javascriptGen) {
   const outputDirectory = "output";
 
   fs.mkdirSync(outputDirectory, {
@@ -10,7 +10,7 @@ export function generate(ast) {
   });
 
   const html = generateHTML();
-  const javascript = generateJavaScript(ast);
+  const javascript = javascriptGen;
 
   fs.writeFileSync(path.join(outputDirectory, "index.html"), html);
 
@@ -32,7 +32,7 @@ function generateHTML() {
 `;
 }
 
-function generateJavaScript(ast) {
+export function generateJavaScript(ast) {
   const lines = [];
 
   for (const node of ast.body) {

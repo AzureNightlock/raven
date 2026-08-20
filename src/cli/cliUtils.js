@@ -1,16 +1,27 @@
+import fs from "fs";
+import path from "node:path";
+import { dim, green, red } from "../style.js";
+
 export function getVersion(cwd) {
   try {
-    const packagePath = path.join(cwd, "../package.json");
+    const packagePath = path.join(cwd, "../../package.json");
     const packageJson = JSON.parse(fs.readFileSync(packagePath, "utf8"));
 
     return packageJson.version;
   } catch (err) {
     console.error(err);
+    console.log(err);
     return "0.0.0";
   }
 }
 
-export function printStage(label, run, currentStage, totalStage, labelWidth=24) {
+export function printStage(
+  label,
+  run,
+  currentStage,
+  totalStage,
+  labelWidth = 24,
+) {
   process.stdout.write(
     `${dim(`[${currentStage}/${totalStage}]`)} ${label.padEnd(labelWidth)}`,
   );

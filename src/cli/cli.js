@@ -1,12 +1,11 @@
 #!/usr/bin/env node
 
 import { spawnSync } from "node:child_process";
-import fs from "fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { generateSetup } from "../generator/generator.js";
-import { purple, deepPurple, red, green, bold, dim } from "../style.js";
+import { purple, deepPurple, red, bold, dim } from "../style.js";
 import { commands } from "../language/types.js";
 import { getVersion } from "./cliUtils.js";
 
@@ -28,7 +27,7 @@ console.log(`${purple("raven")} ${dim(`v${version}`)}`);
 console.log(`${purple("raven")} ${dim("›")} ${bold(deepPurple(command))}`);
 
 if (command === "compile") {
-  const entryFile = path.join(currentDirectory, "entry.js");
+  const entryFile = path.join(currentDirectory, "../entry.js");
 
   const result = spawnSync(process.execPath, [entryFile], {
     stdio: "inherit",
@@ -38,10 +37,6 @@ if (command === "compile") {
   if (result.error) {
     console.error(`${red(bold("Error"))} ${dim("could not start compiler")}`);
     process.exit(1);
-  }
-
-  if (result.status !== 0) {
-    console.error(`${red(bold("Error"))} ${dim("compilation failed")}`);
   }
 
   process.exit(result.status ?? 1);

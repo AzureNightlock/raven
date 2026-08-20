@@ -1,4 +1,11 @@
-import { KEYWORDS, DATA_TYPES, EVENTS, ARITHMETIC_OPERATORS, COMPARISON_OPERATORS, LOGICAL_OPERATORS } from "./language/types.js";
+import {
+  KEYWORDS,
+  DATA_TYPES,
+  EVENTS,
+  ARITHMETIC_OPERATORS,
+  COMPARISON_OPERATORS,
+  LOGICAL_OPERATORS,
+} from "./language/types.js";
 
 function isLetter(char) {
   return /[a-zA-Z]/.test(char);
@@ -52,7 +59,6 @@ export function tokenize(source) {
           column: wordColumn,
           length: word.length,
         });
-        word = "";
       } else if (char === '"') {
         // for string: "button"
         const stringLine = line;

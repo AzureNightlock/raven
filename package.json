@@ -1,6 +1,6 @@
 {
   "name": "@azurenightlock/raven",
-  "version": "0.2.6",
+  "version": "0.2.8",
   "description": "A JavaScript framework that compiles code directly to html/js",
   "repository": {
     "type": "git",
@@ -8,7 +8,7 @@
   },
   "type": "module",
   "bin": {
-    "raven": "src/cli.js"
+    "raven": "src/cli/cli.js"
   },
   "files": [
     "src",
