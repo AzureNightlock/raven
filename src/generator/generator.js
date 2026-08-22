@@ -26,7 +26,7 @@ function generateHTML() {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Raven App</title>
+  <title>Raven</title>
   <script src="script.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
