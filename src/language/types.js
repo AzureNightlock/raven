@@ -1,14 +1,6 @@
 export const DATA_TYPES = new Set(["int", "str", "bool", "html"]);
 
-export const SYMBOLS = {
-  DOT: ".",
-  LEFT_PAREN: "(",
-  RIGHT_PAREN: ")",
-  LEFT_BRACE: "{",
-  RIGHT_BRACE: "}",
-  EQUALS: "=",
-  GREATER_THAN: ">",
-};
+export const SYMBOLS = new Set(["(", ")", "{", "}", ".", "=", "=>"]);
 
 export const properties = new Set([
   // All elements
@@ -74,6 +66,25 @@ export const ARITHMETIC_OPERATORS = new Set(["+", "-", "*", "/", "%", "**"]);
 
 export const COMPARISON_OPERATORS = new Set(["==", "!=", ">", "<", ">=", "<="]);
 
-export const LOGICAL_OPERATORS = new Set(["&&", "||", "!"]);
+export const LOGICAL_OPERATORS = new Set(["&&", "||", "!", "^"]);
 
+export const COMPOUND_ASSIGNMENT_OPERATORS = new Set([
+  "+=",
+  "-=",
+  "*=",
+  "/=",
+  "%=",
+  "**=",
+  "&=",
+  "^=",
+  "|=",
+]);
+
+export const OPERATOR_CHARS = new Set(
+  [
+    ...ARITHMETIC_OPERATORS,
+    ...COMPARISON_OPERATORS,
+    ...LOGICAL_OPERATORS,
+  ].join(""),
+);
 export const commands = new Set(["init", "compile", "format", "lint"]);
