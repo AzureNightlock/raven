@@ -5,7 +5,7 @@ Raven is a small framework for building dashboards, pages, and other browser int
 It compiles Raven source files into plain HTML, CSS, and JavaScript. You can open, inspect, debug, and change the generated code.
 
 > [!WARNING]
-> Raven is still experimental. Expect bugs, missing features, and breaking changes.
+> Raven is still a work in progress. Expect bugs, missing features, and breaking changes.
 
 ## Installation
 

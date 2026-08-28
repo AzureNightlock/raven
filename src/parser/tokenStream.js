@@ -7,7 +7,7 @@ export function tokenToSource(token) {
   }
 
   if (token.type === "SYMBOL") {
-    return SYMBOLS[token.value];
+    return token.value;
   }
 
   return String(token.value);

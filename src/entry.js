@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { tokenize } from "./tokeniser.js";
+import { tokenize } from "./tokeniser/tokeniser.js";
 import { parse } from "./parser/parserMain.js";
 import { generate, generateJavaScript } from "./generator/generator.js";
 import { reportAndExit } from "./errors.js";

@@ -17,6 +17,7 @@ export function parseStatement(stream) {
         return parseCreateElement(stream);
       }
     }
+
     // ex: int x
     if (token.value === "int") {
       if (nextToken.type === "IDENTIFIER") {
@@ -24,12 +25,13 @@ export function parseStatement(stream) {
       }
     }
   }
+
   if (EVENTS.has(token.value)) {
     return parseEventListener(stream);
   }
 
   if (token.type === "IDENTIFIER") {
-    if (nextToken.type === "SYMBOL" && nextToken.value === "EQUALS") {
+    if (nextToken.type === "SYMBOL" && nextToken.value === "=") {
       return parsePropertyAssignment(stream);
     }
 
@@ -50,9 +52,10 @@ export function parsePropertyAssignment(stream) {
       ↑         ↑
   property    value
   */
+
   const property = stream.expect("IDENTIFIER");
 
-  stream.expect("SYMBOL", "EQUALS");
+  stream.expect("SYMBOL", "=");
 
   const nextToken = stream.peek();
 
@@ -79,15 +82,12 @@ export function parsePropertyAssignment(stream) {
 
 export function parseEventListener(stream) {
   const event = stream.expect("EVENT");
-  stream.expect("SYMBOL", "LEFT_PAREN");
-  stream.expect("SYMBOL", "LEFT_PAREN");
-  stream.expect("SYMBOL", "RIGHT_PAREN");
-  stream.expect("SYMBOL", "ARROW");
-  const open = stream.expect("SYMBOL", "LEFT_BRACE");
-
+  stream.expect("SYMBOL", "(");
+  const open = stream.expect("SYMBOL", "{");
+  
   let action = "";
-
-  while (!stream.atEnd() && !stream.match("SYMBOL", "RIGHT_BRACE")) {
+  
+  while (!stream.atEnd() && !stream.match("SYMBOL", "}")) {
     action += tokenToSource(stream.peek());
     stream.advance();
   }
@@ -100,8 +100,8 @@ export function parseEventListener(stream) {
     );
   }
 
-  stream.expect("SYMBOL", "RIGHT_BRACE");
-  stream.expect("SYMBOL", "RIGHT_PAREN");
+  stream.expect("SYMBOL", "}");
+  stream.expect("SYMBOL", ")");
 
   return {
     type: "EventListener",
@@ -114,22 +114,22 @@ export function parseCreateElement(stream) {
   stream.expect("DATA_TYPE", "html");
 
   const varName = stream.expect("IDENTIFIER");
-  stream.expect("SYMBOL", "EQUALS");
+  stream.expect("SYMBOL", "=");
   stream.expect("KEYWORD", "createElement");
-  stream.expect("SYMBOL", "LEFT_PAREN");
+  stream.expect("SYMBOL", "(");
   const tagName = stream.expect("STRING");
 
-  stream.expect("SYMBOL", "RIGHT_PAREN");
+  stream.expect("SYMBOL", ")");
 
-  stream.expect("SYMBOL", "LEFT_BRACE");
+  stream.expect("SYMBOL", "{");
 
   const body = [];
 
-  while (!stream.atEnd() && !stream.match("SYMBOL", "RIGHT_BRACE")) {
+  while (!stream.atEnd() && !stream.match("SYMBOL", "}")) {
     body.push(parseStatement(stream));
   }
 
-  stream.expect("SYMBOL", "RIGHT_BRACE");
+  stream.expect("SYMBOL", "}");
 
   return {
     type: "CreateHTMLElement",
@@ -142,7 +142,7 @@ export function parseCreateElement(stream) {
 export function parseVariableAssignment(stream) {
   stream.expect("DATA_TYPE", "int");
   const varName = stream.expect("IDENTIFIER");
-  stream.expect("SYMBOL", "EQUALS");
+  stream.expect("SYMBOL", "=");
   const value = stream.expect("NUMBER");
 
   return {
