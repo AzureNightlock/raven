@@ -1,50 +1,15 @@
 import { RavenError } from "../errors.js";
-import { SYMBOLS } from "../language/types.js";
-
-export function tokenToSource(token) {
-  if (token.type === "STRING") {
-    return JSON.stringify(token.value);
-  }
-
-  if (token.type === "SYMBOL") {
-    return token.value;
-  }
-
-  return String(token.value);
-}
-
-export function describe(token) {
-  return token.type === "EOF"
-    ? "the end of the file"
-    : `"${tokenToSource(token)}"`;
-}
-
-function label(type, value) {
-  if (value === undefined) return type;
-  return `"${SYMBOLS[value] ?? value}"`;
-}
 
 export function createTokenStream(tokens) {
   let position = 0;
 
-  const last = tokens[tokens.length - 1];
-  const eof = last
-    ? {
-        type: "EOF",
-        value: null,
-        line: last.line,
-        column: last.column + last.length,
-        length: 1,
-      }
-    : { type: "EOF", value: null, line: 1, column: 1, length: 1 };
-
   return {
     peek(offset = 0) {
-      return tokens[position + offset] ?? eof;
+      return tokens[position + offset];
     },
 
     advance() {
-      return tokens[position++] ?? eof;
+      return tokens[position++];
     },
 
     atEnd() {
@@ -56,21 +21,21 @@ export function createTokenStream(tokens) {
 
       if (token.type === "EOF") {
         throw new RavenError(
-          `Expected ${label(type, value)}, but reached the end of the file`,
+          `Expected ${value ?? type}, but reached the end of the file`,
           token,
         );
       }
 
       if (token.type !== type) {
         throw new RavenError(
-          `Expected ${label(type, value)} of type ${type}, but got ${describe(token)} of type ${token.type}`,
+          `Expected ${value ?? type} of type ${type}, but got "${token.value}" of type ${token.type}`,
           token,
         );
       }
 
       if (value !== undefined && token.value !== value) {
         throw new RavenError(
-          `Expected ${label(type, value)}, but got ${describe(token)}`,
+          `Expected ${value}, but got "${token.value}"`,
           token,
         );
       }

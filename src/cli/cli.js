@@ -4,10 +4,10 @@ import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { generateSetup } from "../generator/generator.js";
+import { generateSetup } from "../generator/setup.js";
 import { purple, deepPurple, red, bold, dim } from "../style.js";
 import { commands } from "../language/types.js";
-import { getVersion } from "./cliUtils.js";
+import { getVersion } from "./utils.js";
 
 const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
 
