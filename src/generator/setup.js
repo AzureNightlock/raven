@@ -1,3 +1,6 @@
+import fs from "fs";
+import path from "path";
+
 export function generateSetup() {
   const srcDirectory = path.join(process.cwd(), "src");
   const pageFile = path.join(srcDirectory, "page.rvn");
