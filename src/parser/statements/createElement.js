@@ -1,4 +1,4 @@
-import { parseStatement } from "../parserStatements.js";
+import { parseStatement } from "../parseStatement.js";
 
 export function parseCreateElement(stream) {
   stream.expect("DATA_TYPE", "html");

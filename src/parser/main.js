@@ -1,4 +1,4 @@
-import { parseStatement } from "./parserStatements.js";
+import { parseStatement } from "./parseStatement.js";
 import { createTokenStream } from "./tokenStream.js";
 
 export function parse(tokens) {

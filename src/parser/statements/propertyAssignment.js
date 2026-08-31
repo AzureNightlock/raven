@@ -1,3 +1,5 @@
+import { RavenError } from "../../errors.js";
+
 export function parsePropertyAssignment(stream) {
   /* 
   EXAMPLE:
