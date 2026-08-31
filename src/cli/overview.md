@@ -13,8 +13,8 @@ The Raven CLI folder is purely for printing outputs, errors and etc on to the te
 
 * **The `init` Command:** When a user runs `raven init`, it calls `generateSetup()` to scaffold a new project. Specifically, it ensures a `src` directory and a boilerplate `src/page.rvn` file exist. It provides context-aware feedback depending on whether these files are newly created or already existed.
 
-## `cliUtils.js` (Helper Utilities)
-`cliUtils.js` mainly consists of reusable helper functions:
+## `utils.js` (Helper Utilities)
+`utils.js` mainly consists of reusable helper functions:
 
 * **`getVersion`**: Returns the version number from the project's `package.json`.
 

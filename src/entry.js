@@ -1,11 +1,12 @@
 import fs from "fs";
 import path from "path";
-import { tokenize } from "./tokeniser/tokeniser.js";
-import { parse } from "./parser/parserMain.js";
-import { generate, generateJavaScript } from "./generator/generator.js";
+import { tokenise } from "./tokeniser/tokenise.js";
+import { parse } from "./parser/main.js";
+import { generate } from "./generator/generator.js";
+import { generateJavaScript } from "./generator/js/generate.js";
 import { reportAndExit } from "./errors.js";
 import { GLYPH, green, red, bold, dim } from "./style.js";
-import { getFileSizes, printStage } from "./cli/cliUtils.js";
+import { getFileSizes, printStage } from "./cli/utils.js";
 
 const cwd = process.cwd();
 const file = process.argv[3] ?? "src/page.rvn";
@@ -25,7 +26,7 @@ function runStage(message, fn) {
 }
 
 try {
-  const tokens = runStage("Tokenizing source", () => tokenize(source));
+  const tokens = runStage("Tokenizing source", () => tokenise(source));
   const ast = runStage("Building AST", () => parse(tokens));
   const javascript = runStage("Generating JavaScript", () =>
     generateJavaScript(ast),

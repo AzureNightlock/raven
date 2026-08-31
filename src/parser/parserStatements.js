@@ -1,7 +1,9 @@
 import { RavenError } from "../errors.js";
-import { describe, tokenToSource } from "./tokenStream.js";
-
 import { DATA_TYPES, EVENTS } from "../language/types.js";
+import { parseCreateElement } from "./statements/createElement.js";
+import { parseEventListener } from "./statements/eventListener.js";
+import { parsePropertyAssignment } from "./statements/propertyAssignment.js";
+import { parseVariableAssignment } from "./statements/variableAssignment.js";
 
 export function parseStatement(stream) {
   const token = stream.peek();
@@ -42,113 +44,5 @@ export function parseStatement(stream) {
     );
   }
 
-  throw new RavenError(`Unexpected ${token.type} ${describe(token)}`, token);
-}
-
-export function parsePropertyAssignment(stream) {
-  /* 
-  EXAMPLE:
-  textContent = 5
-      ↑         ↑
-  property    value
-  */
-
-  const property = stream.expect("IDENTIFIER");
-
-  stream.expect("SYMBOL", "=");
-
-  const nextToken = stream.peek();
-
-  let value;
-
-  if (nextToken.type === "NUMBER") {
-    value = stream.expect("NUMBER");
-  } else if (nextToken.type === "STRING") {
-    value = stream.expect("STRING");
-  } else {
-    throw new RavenError(
-      `Expected a number or string, but got ${describe(nextToken)}`,
-      nextToken,
-      `Property values must be a literal, like "hello" or 42.`,
-    );
-  }
-
-  return {
-    type: "PropertyAssignment",
-    property: property.value,
-    value: value.value,
-  };
-}
-
-export function parseEventListener(stream) {
-  const event = stream.expect("EVENT");
-  stream.expect("SYMBOL", "(");
-  const open = stream.expect("SYMBOL", "{");
-  
-  let action = "";
-  
-  while (!stream.atEnd() && !stream.match("SYMBOL", "}")) {
-    action += tokenToSource(stream.peek());
-    stream.advance();
-  }
-
-  if (stream.atEnd()) {
-    throw new RavenError(
-      `Unclosed handler body for "${event.value}"`,
-      open,
-      `This "{" is never closed.`,
-    );
-  }
-
-  stream.expect("SYMBOL", "}");
-  stream.expect("SYMBOL", ")");
-
-  return {
-    type: "EventListener",
-    eventType: event.value,
-    action,
-  };
-}
-
-export function parseCreateElement(stream) {
-  stream.expect("DATA_TYPE", "html");
-
-  const varName = stream.expect("IDENTIFIER");
-  stream.expect("SYMBOL", "=");
-  stream.expect("KEYWORD", "createElement");
-  stream.expect("SYMBOL", "(");
-  const tagName = stream.expect("STRING");
-
-  stream.expect("SYMBOL", ")");
-
-  stream.expect("SYMBOL", "{");
-
-  const body = [];
-
-  while (!stream.atEnd() && !stream.match("SYMBOL", "}")) {
-    body.push(parseStatement(stream));
-  }
-
-  stream.expect("SYMBOL", "}");
-
-  return {
-    type: "CreateHTMLElement",
-    tagName: tagName.value,
-    varName: varName.value,
-    body,
-  };
-}
-
-export function parseVariableAssignment(stream) {
-  stream.expect("DATA_TYPE", "int");
-  const varName = stream.expect("IDENTIFIER");
-  stream.expect("SYMBOL", "=");
-  const value = stream.expect("NUMBER");
-
-  return {
-    type: "CreateIntegerVariable",
-    dataType: "int",
-    varName: varName.value,
-    value: value.value,
-  };
+  throw new RavenError(`Unexpected ${token.type} "${token.value}"`, token);
 }

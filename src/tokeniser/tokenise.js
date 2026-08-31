@@ -1,7 +1,7 @@
-import { isLetter, tokenType } from "./tokeniserUtils.js";
+import { isLetter, tokenType } from "./utils.js";
 import { OPERATOR_CHARS, SYMBOLS } from "../language/types.js";
 
-export function tokenize(source) {
+export function tokenise(source) {
   source = source.replace(/\r\n?/g, "\n");
 
   const tokens = [];
@@ -152,6 +152,15 @@ export function tokenize(source) {
 
     tokenCursor++;
   }
+
+  tokens.push({
+    type: "EOF",
+    value: null,
+    line: currentLine,
+    columnStart: currentColumn,
+    columnEnd: currentColumn+1,
+    length: 1,
+  });
 
   return tokens;
 }
