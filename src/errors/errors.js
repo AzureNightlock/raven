@@ -39,7 +39,7 @@ export function renderError(error, fileContent, file = "<anonymous>") {
   const contextLine = getContextLine(line, fileLines);
 
   output.push("─".repeat(80));
-  output.push(`File: ${file}`);
+  output.push(`file: ${file}`);
   output.push(`${errorMessage}`);
 
   if (contextLine === null) {
@@ -52,9 +52,9 @@ export function renderError(error, fileContent, file = "<anonymous>") {
     output.push(spacer(4) + "| ...");
     output.push(formatErrorLine(line, fileLines));
   }
-
+  output.push("\n")
+  output.push(spacer(2)+`hint: ${error.hint}`)
   output.push("─".repeat(80));
-  console;
   return output.join("\n");
 }
 
