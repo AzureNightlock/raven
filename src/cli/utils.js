@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "node:path";
-import { dim, green, red } from "../style.js";
+import { dim, green, aka } from "./style.js";
 
 export function getVersion(cwd) {
   try {
@@ -30,7 +30,7 @@ export function printStage(
     process.stdout.write(`${green("done")}\n`);
     return result;
   } catch (error) {
-    process.stdout.write(`${red("fail")}\n`);
+    process.stdout.write(`${aka("fail")}\n`);
     throw error;
   }
 }
@@ -42,7 +42,7 @@ export function getFileSizes(filePaths) {
       const stats = fs.statSync(filePath);
       return { file, size: stats.size };
     } catch (err) {
-      console.error(err)
+      console.error(err);
       return { file, size: null };
     }
   });

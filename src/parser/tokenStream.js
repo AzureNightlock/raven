@@ -24,6 +24,7 @@ export function createTokenStream(tokens) {
           "EOFError",
           `Expected ${value ?? type}, but reached the end of the file`,
           token,
+          `Add the missing "${value ?? type}" before the end of the file.`,
         );
       }
 

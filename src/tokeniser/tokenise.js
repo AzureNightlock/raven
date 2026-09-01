@@ -2,8 +2,6 @@ import { isLetter, tokenType } from "./utils.js";
 import { OPERATOR_CHARS, SYMBOLS } from "../language/types.js";
 
 export function tokenise(source) {
-  source = source.replace(/\r\n?/g, "\n");
-
   const tokens = [];
 
   let token = "";
