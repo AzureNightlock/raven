@@ -1,13 +1,15 @@
 import { GLYPH, purple, red, bold, dim } from "./style.js";
 
 const TAB_WIDTH = 4;
+let errorNumber = 1; //change this when multiple errors get found at once
 
 export class RavenError extends Error {
-  constructor(message, token, hint) {
+  constructor(message, token, hint, errorType) {
     super(message);
     this.name = "RavenError";
     this.token = token;
     this.hint = hint;
+    this.errorType = errorType;
   }
 }
 
@@ -26,9 +28,8 @@ function visualColumn(rawLine, column) {
 
 export function renderError(error, source, file = "<anonymous>") {
   if (!error.token) return `  ${red(GLYPH.mark)} ${bold(error.message)}`;
-
-  const lines = source.replace(/\r\n?/g, "\n").split("\n");
-  const { line, column, length } = error.token;
+  const { line, columnStart, columnEnd, length } = error.token;
+  
 
   const raw = lines[line - 1] ?? "";
   const text = expandTabs(raw);
@@ -72,7 +73,10 @@ export function renderError(error, source, file = "<anonymous>") {
 }
 
 export function reportAndExit(error, source, file) {
-  if (!(error instanceof RavenError)) throw error;
+  if (!(error instanceof RavenError)) {
+    console.log("Not a raven error")
+    throw error;
+  } 
   console.error("\n" + renderError(error, source, file) + "\n");
   process.exit(1);
 }
