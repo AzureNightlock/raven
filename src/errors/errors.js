@@ -1,4 +1,5 @@
-import { GLYPH, purple, red, bold, dim } from "./style.js";
+import { GLYPH, purple, red, bold, dim } from "../style.js";
+import { spacer, formatErrorLine } from "./utils.js";
 
 let errorNumber = 1; //change this when multiple errors get found at once gets implemented
 
@@ -27,26 +28,20 @@ function getContextLine(startLine, fileLines) {
   return contextCounter + 1;
 }
 
-function spacer(spaceSize = 3){
-  return " ".repeat(spaceSize);
-}
 
-function formatErrorLine(lineNumber, line) {
-  return spacer() + `${lineNumber}| ${line[lineNumber - 1].trim()}`;
-}
 
 export function renderError(error, fileContent, file = "<anonymous>") {
   if (!error.token) return `  ${red(GLYPH.mark)} ${bold(error.message)}`;
   const { line, columnStart, columnEnd, length } = error.token;
-  let output = []
+  let output = [];
   const fileLines = fileContent.split("\n");
   const errorMessage = `${errorNumber}) ${error.errorType}: ${error.message}\n`;
-  const contextLine = getContextLine(line, fileLines)
+  const contextLine = getContextLine(line, fileLines);
 
   output.push("─".repeat(80));
-  output.push(`File: ${file}`)
-  output.push(`${errorMessage}`)
-  
+  output.push(`File: ${file}`);
+  output.push(`${errorMessage}`);
+
   if (contextLine === null) {
     output.push(formatErrorLine(line, fileLines));
   } else if (contextLine + 1 === line) {
@@ -54,12 +49,12 @@ export function renderError(error, fileContent, file = "<anonymous>") {
     output.push(formatErrorLine(line, fileLines));
   } else {
     output.push(formatErrorLine(contextLine, fileLines));
-    output.push(spacer(5) + "| ..." + spacer());
+    output.push(spacer(4) + "| ...");
     output.push(formatErrorLine(line, fileLines));
   }
 
   output.push("─".repeat(80));
-  console
+  console;
   return output.join("\n");
 }
 

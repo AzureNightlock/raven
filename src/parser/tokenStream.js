@@ -1,4 +1,4 @@
-import { RavenError } from "../errors.js";
+import { RavenError } from "../errors/errors.js";
 
 export function createTokenStream(tokens) {
   let position = 0;

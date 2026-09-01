@@ -1,4 +1,4 @@
-import { RavenError } from "../errors.js";
+import { RavenError } from "../errors/errors.js";
 import { properties } from "../language/types.js";
 
 export function generateNode(node, lines, currentElement, currentTagName) {
@@ -32,7 +32,7 @@ export function generateNode(node, lines, currentElement, currentTagName) {
     } else {
       throw new RavenError(
         "PropertyError",
-        `Invalid property "${node.property}" for <${currentTagName}> element "${currentElement}"`
+        `Invalid property "${node.property}" for <${currentTagName}> element "${currentElement}"`,
       );
     }
   } else if (node.type === "EventListener") {
@@ -54,6 +54,6 @@ export function generateNode(node, lines, currentElement, currentTagName) {
   } else if (node.type === "CreateIntegerVariable") {
     lines.push(`let ${node.varName} = ${node.value};`);
   } else {
-    throw new RavenError("TypeError",`Unknown node type: ${node.type}`);
+    throw new RavenError("TypeError", `Unknown node type: ${node.type}`);
   }
 }

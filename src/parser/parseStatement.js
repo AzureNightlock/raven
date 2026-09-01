@@ -1,4 +1,4 @@
-import { RavenError } from "../errors.js";
+import { RavenError } from "../errors/errors.js";
 import { DATA_TYPES, EVENTS } from "../language/types.js";
 import { parseCreateElement } from "./statements/createElement.js";
 import { parseEventListener } from "./statements/eventListener.js";
