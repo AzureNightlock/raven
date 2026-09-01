@@ -15,6 +15,7 @@ export function parseEventListener(stream) {
 
   if (stream.atEnd()) {
     throw new RavenError(
+      "SyntaxError",
       `Unclosed handler body for "${event.value}"`,
       open,
       `This "{" is never closed.`,

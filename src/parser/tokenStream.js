@@ -21,6 +21,7 @@ export function createTokenStream(tokens) {
 
       if (token.type === "EOF") {
         throw new RavenError(
+          "EOFError",
           `Expected ${value ?? type}, but reached the end of the file`,
           token,
         );
@@ -28,13 +29,15 @@ export function createTokenStream(tokens) {
 
       if (token.type !== type) {
         throw new RavenError(
-          `Expected ${value ?? type} of type ${type}, but got "${token.value}" of type ${token.type}`,
+          "SyntaxError",
+          `Expected type ${type} for ${value}, but got ${token.type} for "${token.value}"`,
           token,
         );
       }
 
       if (value !== undefined && token.value !== value) {
         throw new RavenError(
+          "SyntaxError",
           `Expected ${value}, but got "${token.value}"`,
           token,
         );
@@ -45,7 +48,6 @@ export function createTokenStream(tokens) {
 
     match(type, value) {
       const token = this.peek();
-
       return (
         token.type === type && (value === undefined || token.value === value)
       );

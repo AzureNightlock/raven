@@ -16,6 +16,7 @@ export function generateNode(node, lines, currentElement, currentTagName) {
   } else if (node.type === "PropertyAssignment") {
     if (!currentElement) {
       throw new RavenError(
+        "PropertyError",
         `Property "${node.property}" property must be inside an html element`,
       );
     }
@@ -30,12 +31,14 @@ export function generateNode(node, lines, currentElement, currentTagName) {
       );
     } else {
       throw new RavenError(
+        "PropertyError",
         `Invalid property "${node.property}" for <${currentTagName}> element "${currentElement}"`
       );
     }
   } else if (node.type === "EventListener") {
     if (!currentElement) {
       throw new RavenError(
+        "SyntaxError",
         `"${node.eventType}" event must be inside an html element`,
       );
     }
@@ -51,6 +54,6 @@ export function generateNode(node, lines, currentElement, currentTagName) {
   } else if (node.type === "CreateIntegerVariable") {
     lines.push(`let ${node.varName} = ${node.value};`);
   } else {
-    throw new RavenError(`Unknown node type: ${node.type}`);
+    throw new RavenError("TypeError",`Unknown node type: ${node.type}`);
   }
 }

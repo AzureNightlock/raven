@@ -1,82 +1,73 @@
 import { GLYPH, purple, red, bold, dim } from "./style.js";
 
-const TAB_WIDTH = 4;
-let errorNumber = 1; //change this when multiple errors get found at once
+let errorNumber = 1; //change this when multiple errors get found at once gets implemented
 
 export class RavenError extends Error {
-  constructor(message, token, hint, errorType) {
+  constructor(errorType, message, token, hint) {
     super(message);
+    this.errorType = errorType;
     this.name = "RavenError";
     this.token = token;
     this.hint = hint;
-    this.errorType = errorType;
   }
 }
 
-function expandTabs(text) {
-  let out = "";
-  for (const char of text) {
-    if (char === "\t") out += " ".repeat(TAB_WIDTH - (out.length % TAB_WIDTH));
-    else out += char;
+function getContextLine(startLine, fileLines) {
+  let contextCounter = startLine - 2;
+
+  while (
+    contextCounter >= 0 &&
+    !fileLines[contextCounter]?.trimEnd().endsWith("{")
+  ) {
+    contextCounter--;
   }
-  return out;
+
+  if (contextCounter < 0) return null;
+
+  return contextCounter + 1;
 }
 
-function visualColumn(rawLine, column) {
-  return expandTabs(rawLine.slice(0, column - 1)).length + 1;
+function spacer(spaceSize = 3){
+  return " ".repeat(spaceSize);
 }
 
-export function renderError(error, source, file = "<anonymous>") {
+function formatErrorLine(lineNumber, line) {
+  return spacer() + `${lineNumber}| ${line[lineNumber - 1].trim()}`;
+}
+
+export function renderError(error, fileContent, file = "<anonymous>") {
   if (!error.token) return `  ${red(GLYPH.mark)} ${bold(error.message)}`;
   const { line, columnStart, columnEnd, length } = error.token;
+  let output = []
+  const fileLines = fileContent.split("\n");
+  const errorMessage = `${errorNumber}) ${error.errorType}: ${error.message}\n`;
+  const contextLine = getContextLine(line, fileLines)
+
+  output.push("─".repeat(80));
+  output.push(`File: ${file}`)
+  output.push(`${errorMessage}`)
   
-
-  const raw = lines[line - 1] ?? "";
-  const text = expandTabs(raw);
-  const caretColumn = visualColumn(raw, column);
-  const caretLength = Math.max(
-    1,
-    Math.min(
-      expandTabs(raw.slice(column - 1, column - 1 + length)).length,
-      Math.max(1, text.length - caretColumn + 1),
-    ),
-  );
-
-  const width = String(Math.min(line + 1, lines.length)).length;
-  const gutter = " ".repeat(width);
-  const pad = (n) => String(n).padStart(width);
-  const indent = " ".repeat(caretColumn - 1);
-
-  const out = [
-    `  ${red(GLYPH.mark)} ${bold(error.message)}`,
-    `${gutter} ${GLYPH.open}[${dim(`${file}:${line}:${column}`)}]`,
-  ];
-
-  if (line - 2 >= 0) {
-    out.push(`${pad(line - 1)} ${GLYPH.bar} ${expandTabs(lines[line - 2])}`);
+  if (contextLine === null) {
+    output.push(formatErrorLine(line, fileLines));
+  } else if (contextLine + 1 === line) {
+    output.push(formatErrorLine(contextLine, fileLines));
+    output.push(formatErrorLine(line, fileLines));
+  } else {
+    output.push(formatErrorLine(contextLine, fileLines));
+    output.push(spacer(5) + "| ..." + spacer());
+    output.push(formatErrorLine(line, fileLines));
   }
 
-  out.push(`${pad(line)} ${GLYPH.bar} ${text}`);
-  out.push(
-    `${gutter} ${GLYPH.ann} ${indent}${red(GLYPH.under.repeat(caretLength))}`,
-  );
-
-  if (line < lines.length) {
-    out.push(`${pad(line + 1)} ${GLYPH.bar} ${expandTabs(lines[line])}`);
-  }
-
-  out.push(`${gutter} ${GLYPH.close}`);
-
-  if (error.hint) out.push(`  ${purple("help:")} ${error.hint}`);
-
-  return out.join("\n");
+  output.push("─".repeat(80));
+  console
+  return output.join("\n");
 }
 
-export function reportAndExit(error, source, file) {
+export function reportAndExit(error, fileContent, file) {
   if (!(error instanceof RavenError)) {
-    console.log("Not a raven error")
+    console.log("Not a raven error");
     throw error;
-  } 
-  console.error("\n" + renderError(error, source, file) + "\n");
+  }
+  console.error("\n" + renderError(error, fileContent, file) + "\n");
   process.exit(1);
 }

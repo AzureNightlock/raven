@@ -22,6 +22,7 @@ export function parsePropertyAssignment(stream) {
     value = stream.expect("STRING");
   } else {
     throw new RavenError(
+      "SyntaxError",
       `Expected a number or string, but got ${nextToken.value}`,
       nextToken,
       `Property values must be a literal, like "hello" or 42.`,

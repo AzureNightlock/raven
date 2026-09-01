@@ -9,10 +9,6 @@ export function parseStatement(stream) {
   const token = stream.peek();
   const nextToken = stream.peek(1);
 
-  if (token.type === "EOF") {
-    throw new RavenError("Unexpected end of input", token);
-  }
-
   if (DATA_TYPES.has(token.value)) {
     if (token.value === "html") {
       if (nextToken.type === "IDENTIFIER") {
@@ -38,11 +34,16 @@ export function parseStatement(stream) {
     }
 
     throw new RavenError(
-      `Expected a property assignment or event handler after "${token.value}`,
+      "SyntaxError",
+      `Expected a property assignment or event handler after "${token.value}"`,
       token,
       `Write a html <property> = value or <event>({ ... }).`,
     );
   }
 
-  throw new RavenError(`Unexpected ${token.type} "${token.value}"`, token);
+  throw new RavenError(
+    "SyntaxError",
+    `Unexpected ${token.type} "${token.value}"`,
+    token,
+  );
 }
