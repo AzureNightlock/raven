@@ -43,8 +43,6 @@ export function tokenise(source) {
         tokenCursor++;
         currentColumn++;
 
-        let str = '"';
-
         while (tokenCursor < source.length && source[tokenCursor] !== '"') {
           if (source[tokenCursor] === "\n") {
             currentLine++;
@@ -56,7 +54,6 @@ export function tokenise(source) {
           str += source[tokenCursor];
           tokenCursor++;
         }
-        str += '"';
 
         tokens.push({
           type: "STRING",
