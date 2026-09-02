@@ -1,9 +1,6 @@
 import { deepPurple, dim, aka, neonCyan, yamabuki, ai, ink, sakura, green, purple } from "../cli/style.js";
 import { tokenise } from "../tokeniser/tokenise.js";
 
-// Keyed by the token types produced by tokenType() in src/tokeniser/utils.js.
-// IDENTIFIER is deliberately absent: the missing lookup is what leaves it
-// uncoloured, so unknown token types degrade the same way.
 const TOKEN_COLOURS = {
   DATA_TYPE: aka,
   KEYWORD: deepPurple,
@@ -22,38 +19,36 @@ export function spacer(spaceSize = 3) {
   return " ".repeat(spaceSize);
 }
 
-// Re-runs the real tokeniser over a single trimmed line so highlighting can
-// never drift from the language definition. Columns come back relative to the
-// string passed in, so they index straight into it.
-function highlight(text) {
-  let tokens;
-
-  try {
-    tokens = tokenise(text);
-  } catch {
-    return text; // never let rendering an error throw a second error
+function paintText(token){
+  const paint = TOKEN_COLOURS[token.type];
+  if (!paint) {
+    return token.value;
   }
+  
+  if (token.type === "EOF"){
+    return paint("<EOF>")
+  };
 
-  let output = "";
-  let cursor = 0;
-
-  for (const token of tokens) {
-    const paint = TOKEN_COLOURS[token.type];
-
-    if (!paint) continue; // IDENTIFIER, EOF, anything unrecognised
-
-    const from = Math.max(cursor, token.columnStart - 1);
-    const to = Math.min(text.length, token.columnEnd - 1);
-
-    if (to <= from) continue;
-
-    output += text.slice(cursor, from);
-    output += paint(text.slice(from, to));
-    cursor = to;
-  }
-
-  return output + text.slice(cursor);
+  return paint(token.value);
 }
+
+function highlight(text) {
+  const tokens = tokenise(text);
+  let output = ``;
+
+  const firstToken = tokens[0];
+  output += paintText(firstToken) + ` `;
+
+  for (const token of tokens.slice(1, -1)) {
+    output += paintText(token) + ` `;
+  }
+
+  const lastToken = tokens[tokens.length - 1];
+  output += paintText(lastToken);
+
+  return output;
+}
+
 
 export function formatErrorLine(lineNumber, lines) {
   const text = lines[lineNumber - 1]?.trim();

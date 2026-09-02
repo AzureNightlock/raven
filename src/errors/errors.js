@@ -33,6 +33,23 @@ export function renderError(error, fileContent, file = "<anonymous>") {
   const displayLength = type === "EOF" ? "<EOF>".length : length;
   let output = [];
   const fileLines = fileContent.split("\n");
+  function renderContext(line, fileLines) {
+    const output = [];
+    const contextLine = getContextLine(line, fileLines);
+
+    if (contextLine === null) {
+      output.push(formatErrorLine(line, fileLines));
+    } else if (contextLine + 1 === line) {
+      output.push(formatErrorLine(contextLine, fileLines));
+      output.push(formatErrorLine(line, fileLines));
+    } else {
+      output.push(formatErrorLine(contextLine, fileLines));
+      output.push(spacer(5) + `${colors.deepPurple("|")} ${colors.ai("...")}`);
+      output.push(formatErrorLine(line, fileLines));
+    }
+
+    return output;
+  }
 
   const errorMessage =
     `${spacer(1) + colors.deepPurple(error.errorType)}` +

@@ -150,6 +150,17 @@ export function tokenise(source) {
 
     tokenCursor++;
   }
+  
+  if (token !== "") {
+    tokens.push({
+      type: tokenType(token),
+      value: token,
+      line: tokenLine,
+      columnStart: tokenColumn,
+      columnEnd: tokenColumn + token.length,
+      length: token.length,
+    });
+  }
 
   tokens.push({
     type: "EOF",
