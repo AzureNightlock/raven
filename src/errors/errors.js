@@ -93,10 +93,12 @@ export function renderError(error, fileContent, file = "<anonymous>") {
 
   output.push("");
 
-  output.push(
-    spacer(2) +
-      `${colors.purple("hint")}${colors.dim(":")} ${colors.ai(error.hint)}`,
-  );
+  if (error.hint) {
+    output.push(
+      spacer(2) +
+        `${colors.purple("hint")}${colors.dim(":")} ${colors.ai(error.hint)}`,
+    );
+  }
 
   output.push(colors.sumi("╚" + "═".repeat(width - 1)));
 

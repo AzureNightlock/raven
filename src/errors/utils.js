@@ -19,17 +19,19 @@ export function spacer(spaceSize = 3) {
   return " ".repeat(spaceSize);
 }
 
-function paintText(token){
+function paintText(token) {
   const paint = TOKEN_COLOURS[token.type];
-  if (!paint) {
-    return token.value;
-  }
-  
-  if (token.type === "EOF"){
-    return paint("<EOF>")
-  };
+  let text = token.value;
 
-  return paint(token.value);
+  if (token.type === "STRING") {
+    text = `${token.value}`;
+  }
+
+  if (token.type === "EOF") {
+    text = "<EOF>";
+  }
+
+  return paint ? paint(text) : text;
 }
 
 function highlight(text) {

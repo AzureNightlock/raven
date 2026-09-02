@@ -4,7 +4,7 @@ import { tokenise } from "./tokeniser/tokenise.js";
 import { parse } from "./parser/main.js";
 import { generate } from "./generator/generator.js";
 import { generateJavaScript } from "./generator/js/generate.js";
-import { reportAndExit } from "./errors/errors.js";
+import { RavenError, reportAndExit } from "./errors/errors.js";
 import { green, aka, bold, dim } from "./cli/style.js";
 import { getFileSizes, printStage } from "./cli/utils.js";
 
@@ -29,6 +29,14 @@ function runStage(message, fn) {
 
 try {
   const tokens = runStage("Tokenizing source", () => tokenise(source));
+  if (tokens[0].type === "EOF") {
+    throw new RavenError(
+      "EmptyFileError",
+      "Cannot compile an empty file",
+      tokens[0],
+      "Add some Raven code to the file.",
+    );
+  }
   const ast = runStage("Building AST", () => parse(tokens));
   const javascript = runStage("Generating JavaScript", () =>
     generateJavaScript(ast),
