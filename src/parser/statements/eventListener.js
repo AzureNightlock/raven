@@ -1,5 +1,5 @@
 import { tokenToString } from "../utils.js";
-import { RavenError } from "../../errors.js";
+import { RavenError } from "../../errors/errors.js";
 
 export function parseEventListener(stream) {
   const event = stream.expect("EVENT");
@@ -15,6 +15,7 @@ export function parseEventListener(stream) {
 
   if (stream.atEnd()) {
     throw new RavenError(
+      "SyntaxError",
       `Unclosed handler body for "${event.value}"`,
       open,
       `This "{" is never closed.`,

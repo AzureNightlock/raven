@@ -5,7 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { generateSetup } from "../generator/setup.js";
-import { purple, deepPurple, red, bold, dim } from "../style.js";
+import { purple, deepPurple, aka, bold, dim } from "./style.js";
 import { commands } from "../language/types.js";
 import { getVersion } from "./utils.js";
 
@@ -16,7 +16,7 @@ const version = getVersion(currentDirectory);
 
 if (!commands.has(command)) {
   console.error(
-    `${red(bold("✕ unknown command"))} ${red(command ?? "<none>")}\n` +
+    `${aka(bold("✕ unknown command"))} ${aka(command ?? "<none>")}\n` +
       `  ${dim("expected:")} ${[...commands].map(purple).join(dim(" | "))}`,
   );
 
@@ -35,7 +35,7 @@ if (command === "compile") {
   });
 
   if (result.error) {
-    console.error(`${red(bold("Error"))} ${dim("could not start compiler")}`);
+    console.error(`${aka(bold("Error"))} ${dim("could not start compiler")}`);
     process.exit(1);
   }
 
@@ -58,7 +58,7 @@ if (command === "init") {
       console.log(`${purple("✓")} ${bold("Project is already set up")}`);
     }
   } catch (error) {
-    console.error(`${red(bold("✕ setup failed"))} ${dim(error.message)}`);
+    console.error(`${aka(bold("✕ setup failed"))} ${dim(error.message)}`);
     process.exit(1);
   }
 }

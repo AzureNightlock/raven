@@ -4,8 +4,8 @@ import { tokenise } from "./tokeniser/tokenise.js";
 import { parse } from "./parser/main.js";
 import { generate } from "./generator/generator.js";
 import { generateJavaScript } from "./generator/js/generate.js";
-import { reportAndExit } from "./errors.js";
-import { GLYPH, green, red, bold, dim } from "./style.js";
+import { RavenError, reportAndExit } from "./errors/errors.js";
+import { green, aka, bold, dim } from "./cli/style.js";
 import { getFileSizes, printStage } from "./cli/utils.js";
 
 const cwd = process.cwd();
@@ -19,7 +19,9 @@ function formatSize(bytes) {
 }
 
 const started = performance.now();
-const source = fs.readFileSync(path.join(cwd, file), "utf-8");
+const source = fs
+  .readFileSync(path.join(cwd, file), "utf-8")
+  .replace(/\r\n?/g, "\n");
 
 function runStage(message, fn) {
   return printStage(message, fn, ++stage, TOTAL);
@@ -27,6 +29,14 @@ function runStage(message, fn) {
 
 try {
   const tokens = runStage("Tokenizing source", () => tokenise(source));
+  if (tokens[0].type === "EOF") {
+    throw new RavenError(
+      "EmptyFileError",
+      "Cannot compile an empty file",
+      tokens[0],
+      "Add some Raven code to the file.",
+    );
+  }
   const ast = runStage("Building AST", () => parse(tokens));
   const javascript = runStage("Generating JavaScript", () =>
     generateJavaScript(ast),
@@ -35,11 +45,10 @@ try {
   const fileSizesObject = getFileSizes(filePaths);
 
   for (const { file, size } of fileSizesObject) {
-    const icon = size != null ? green("✓") : red("✕");
+    const icon = size != null ? green("✓") : aka("✕");
     const label = size != null ? formatSize(size) : "missing";
     console.log(`${icon} ${file} ${dim(label)}`);
   }
-
 } catch (error) {
   reportAndExit(error, source, file);
 }
@@ -47,5 +56,5 @@ try {
 const elapsed = Math.round(performance.now() - started);
 
 console.log(
-  `${green(GLYPH.ok)} ${bold("Compilation successful")} ${dim(`in ${elapsed}ms`)}`,
+  `${green("✓")} ${bold("Compilation successful")} ${dim(`in ${elapsed}ms`)}`,
 );

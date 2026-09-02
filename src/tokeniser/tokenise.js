@@ -2,8 +2,6 @@ import { isLetter, tokenType } from "./utils.js";
 import { OPERATOR_CHARS, SYMBOLS } from "../language/types.js";
 
 export function tokenise(source) {
-  source = source.replace(/\r\n?/g, "\n");
-
   const tokens = [];
 
   let token = "";
@@ -151,6 +149,17 @@ export function tokenise(source) {
     }
 
     tokenCursor++;
+  }
+
+  if (token !== "") {
+    tokens.push({
+      type: tokenType(token),
+      value: token,
+      line: tokenLine,
+      columnStart: tokenColumn,
+      columnEnd: tokenColumn + token.length,
+      length: token.length,
+    });
   }
 
   tokens.push({
