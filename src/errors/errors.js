@@ -1,5 +1,5 @@
 import * as colors from "../cli/style.js";
-import { spacer, formatErrorLine } from "./utils.js";
+import { spacer, formatErrorLine, getContextLine } from "./utils.js";
 
 let errorNumber = 1; //change this when multiple errors get found at once gets implemented
 
@@ -13,23 +13,9 @@ export class RavenError extends Error {
   }
 }
 
-function getContextLine(startLine, fileLines) {
-  let contextCounter = startLine - 2;
-
-  while (
-    contextCounter >= 0 &&
-    !fileLines[contextCounter]?.trimEnd().endsWith("{")
-  ) {
-    contextCounter--;
-  }
-
-  if (contextCounter < 0) return null;
-
-  return contextCounter + 1;
-}
-
 export function renderError(error, fileContent, file = "<anonymous>") {
   const { type, line, columnStart, columnEnd, length } = error.token;
+
   const isEOF = type === "EOF";
   const displayLength = isEOF ? "<EOF>".length : length;
   let output = [];

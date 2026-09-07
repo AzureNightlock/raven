@@ -42,3 +42,18 @@ export function formatErrorLine(lineNumber, lines) {
   // const content = text ? highlight(text) : ai("<EOF>");
   return spacer() + `${dim(lineNumber)} ${deepPurple("|")} ${text}`;
 }
+
+export function getContextLine(startLine, fileLines) {
+  let contextCounter = startLine - 2;
+
+  while (
+    contextCounter >= 0 &&
+    !fileLines[contextCounter]?.trimEnd().endsWith("{")
+  ) {
+    contextCounter--;
+  }
+
+  if (contextCounter < 0) return null;
+
+  return contextCounter + 1;
+}
