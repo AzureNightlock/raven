@@ -88,3 +88,18 @@ export const OPERATOR_CHARS = new Set(
   ].join(""),
 );
 export const commands = new Set(["init", "compile", "format", "lint"]);
+
+// to be used soon
+// const TOKEN_COLOURS = {
+//   DATA_TYPE: aka,
+//   KEYWORD: deepPurple,
+//   EVENT: neonCyan,
+//   SYMBOL: deepPurple,
+//   ARITHMETIC_OPERATOR: deepPurple,
+//   COMPARISON_OPERATOR: deepPurple,
+//   LOGICAL_OPERATOR: deepPurple,
+//   COMPOUND_ASSIGNMENT_OPERATOR: deepPurple,
+//   STRING: yamabuki,
+//   NUMBER: yamabuki,
+//   EOF: ai,
+// };
