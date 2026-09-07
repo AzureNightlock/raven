@@ -13,7 +13,7 @@ export class RavenError extends Error {
   }
 }
 
-export function renderError(error, fileContent, file = "<anonymous>") {
+function renderError(error, fileContent, file = "<anonymous>") {
   const { type, line, columnStart, columnEnd, length } = error.token;
 
   const isEOF = type === "EOF";
