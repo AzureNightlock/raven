@@ -4,7 +4,7 @@
   "description": "clean JS framework + dependency free",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AzureNightlock-raven/raven.git"
+    "url": "https://github.com/AzureNightlock/raven.git"
   },
   "type": "module",
   "bin": {
