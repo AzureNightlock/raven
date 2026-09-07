@@ -1,6 +1,6 @@
 {
   "name": "@azurenightlock/raven",
-  "version": "0.2.9",
+  "version": "0.3.0",
   "description": "A JavaScript framework that compiles code directly to html/js",
   "repository": {
     "type": "git",
