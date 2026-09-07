@@ -40,7 +40,7 @@ export function spacer(spaceSize = 3) {
 export function formatErrorLine(lineNumber, lines) {
   const text = lines[lineNumber - 1];
   // const content = text ? highlight(text) : ai("<EOF>");
-  return spacer() + `${dim(lineNumber)} ${deepPurple("|")} ${text}`;
+  return spacer(4-String(lineNumber).length) + `${dim(lineNumber)} ${deepPurple("|")} ${text}`;
 }
 
 export function getContextLine(startLine, fileLines) {
