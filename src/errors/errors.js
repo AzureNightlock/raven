@@ -65,10 +65,7 @@ function renderError(error, fileContent, file = "<anonymous>") {
   );
 
   output.push(
-    spacer(5) +
-      colors.deepPurple(
-        "|" + "─".repeat(columnStart + displayLength / 2) + "┘",
-      ),
+    spacer(5) + colors.deepPurple("|" + "─".repeat(columnStart + left) + "┘"),
   );
 
   output.push("");
