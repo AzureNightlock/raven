@@ -53,8 +53,8 @@ function highlight(text) {
 
 
 export function formatErrorLine(lineNumber, lines) {
-  const text = lines[lineNumber - 1]?.trim();
-  const content = text ? highlight(text) : ai("<EOF>");
-
-  return spacer() + `${dim(lineNumber)} ${deepPurple("|")} ${content}`;
+  const text = lines[lineNumber - 1];
+  // const content = text ? highlight(text) : ai("<EOF>");
+  console.log(JSON.stringify(text))
+  return spacer() + `${dim(lineNumber)} ${deepPurple("|")} ${text}`;
 }
