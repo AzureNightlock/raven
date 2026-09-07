@@ -11,16 +11,12 @@ export function parseStatement(stream) {
 
   if (DATA_TYPES.has(token.value)) {
     if (token.value === "html") {
-      if (nextToken.type === "IDENTIFIER") {
-        return parseCreateElement(stream);
-      }
+      return parseCreateElement(stream);
     }
 
     // ex: int x
     if (token.value === "int") {
-      if (nextToken.type === "IDENTIFIER") {
-        return parseVariableAssignment(stream);
-      }
+      return parseVariableAssignment(stream);
     }
   }
 

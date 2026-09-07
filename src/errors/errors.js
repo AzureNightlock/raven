@@ -1,5 +1,5 @@
 import * as colors from "../cli/style.js";
-import { spacer, formatErrorLine } from "./utils.js";
+import { spacer, formatErrorLine, getContextLine } from "./utils.js";
 
 let errorNumber = 1; //change this when multiple errors get found at once gets implemented
 
@@ -13,44 +13,13 @@ export class RavenError extends Error {
   }
 }
 
-function getContextLine(startLine, fileLines) {
-  let contextCounter = startLine - 2;
-
-  while (
-    contextCounter >= 0 &&
-    !fileLines[contextCounter]?.trimEnd().endsWith("{")
-  ) {
-    contextCounter--;
-  }
-
-  if (contextCounter < 0) return null;
-
-  return contextCounter + 1;
-}
-
-export function renderError(error, fileContent, file = "<anonymous>") {
+function renderError(error, fileContent, file = "<anonymous>") {
   const { type, line, columnStart, columnEnd, length } = error.token;
-  const displayLength = type === "EOF" ? "<EOF>".length : length;
+
+  const isEOF = type === "EOF";
+  const displayLength = isEOF ? "<EOF>".length : length;
   let output = [];
   const fileLines = fileContent.split("\n");
-  function renderContext(line, fileLines) {
-    const output = [];
-    const contextLine = getContextLine(line, fileLines);
-
-    if (contextLine === null) {
-      output.push(formatErrorLine(line, fileLines));
-    } else if (contextLine + 1 === line) {
-      output.push(formatErrorLine(contextLine, fileLines));
-      output.push(formatErrorLine(line, fileLines));
-    } else {
-      output.push(formatErrorLine(contextLine, fileLines));
-      output.push(spacer(5) + `${colors.deepPurple("|")} ${colors.ai("...")}`);
-      output.push(formatErrorLine(line, fileLines));
-    }
-
-    return output;
-  }
-
   const errorMessage =
     `${spacer(1) + colors.deepPurple(error.errorType)}` +
     `${colors.dim(":")} ${error.message}\n`;
@@ -71,25 +40,33 @@ export function renderError(error, fileContent, file = "<anonymous>") {
   output.push(header);
   output.push(errorMessage);
 
+  const errorLine = formatErrorLine(line, fileLines) + (isEOF ? colors.ai("<EOF>") : "");
   if (contextLine === null) {
-    output.push(formatErrorLine(line, fileLines));
+    output.push(errorLine);
   } else if (contextLine + 1 === line) {
     output.push(formatErrorLine(contextLine, fileLines));
-    output.push(formatErrorLine(line, fileLines));
+    output.push(errorLine);
   } else {
     output.push(formatErrorLine(contextLine, fileLines));
     output.push(spacer(5) + `${colors.deepPurple("|")} ${colors.ai("...")}`);
-    output.push(formatErrorLine(line, fileLines));
+    output.push(errorLine);
   }
 
   const left = Math.floor((displayLength - 1) / 2);
   const right = displayLength - left - 1;
 
-  const marker = " " + "─".repeat(left) + "┬" + "─".repeat(right);
+  const marker =  "─".repeat(left) + "┬" + "─".repeat(right);
 
-  output.push(spacer(5) + colors.dim("·") + colors.deepPurple(marker));
+  output.push(
+    spacer(5) +
+      colors.dim("·") +
+      " ".repeat(columnStart) +
+      colors.deepPurple(marker),
+  );
 
-  output.push(spacer(5) + colors.deepPurple("|" + "─".repeat(left + 1) + "┘"));
+  output.push(
+    spacer(5) + colors.deepPurple("|" + "─".repeat(columnStart + left) + "┘"),
+  );
 
   output.push("");
 

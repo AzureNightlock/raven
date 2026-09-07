@@ -1,60 +1,59 @@
-import { deepPurple, dim, aka, neonCyan, yamabuki, ai, ink, sakura, green, purple } from "../cli/style.js";
-import { tokenise } from "../tokeniser/tokenise.js";
-
-const TOKEN_COLOURS = {
-  DATA_TYPE: aka,
-  KEYWORD: deepPurple,
-  EVENT: neonCyan,
-  SYMBOL: deepPurple,
-  ARITHMETIC_OPERATOR: deepPurple,
-  COMPARISON_OPERATOR: deepPurple,
-  LOGICAL_OPERATOR: deepPurple,
-  COMPOUND_ASSIGNMENT_OPERATOR: deepPurple,
-  STRING: yamabuki,
-  NUMBER: yamabuki,
-  EOF: ai,
-};
+import { deepPurple, dim} from "../cli/style.js";
 
 export function spacer(spaceSize = 3) {
   return " ".repeat(spaceSize);
 }
 
-function paintText(token) {
-  const paint = TOKEN_COLOURS[token.type];
-  let text = token.value;
+// function paintText(token) {
+//   const paint = TOKEN_COLOURS[token.type];
+//   let text = token.value;
 
-  if (token.type === "STRING") {
-    text = `${token.value}`;
-  }
+//   if (token.type === "STRING") {
+//     text = `${token.value}`;
+//   }
 
-  if (token.type === "EOF") {
-    text = "<EOF>";
-  }
+//   if (token.type === "EOF") {
+//     text = "<EOF>";
+//   }
 
-  return paint ? paint(text) : text;
-}
+//   return paint ? paint(text) : text;
+// }
 
-function highlight(text) {
-  const tokens = tokenise(text);
-  let output = ``;
+// function highlight(text) {
+//   const tokens = tokenise(text);
+//   let output = ``;
 
-  const firstToken = tokens[0];
-  output += paintText(firstToken) + ` `;
+//   const firstToken = tokens[0];
+//   output += paintText(firstToken) + ` `;
 
-  for (const token of tokens.slice(1, -1)) {
-    output += paintText(token) + ` `;
-  }
+//   for (const token of tokens.slice(1, -1)) {
+//     output += paintText(token) + ` `;
+//   }
 
-  const lastToken = tokens[tokens.length - 1];
-  output += paintText(lastToken);
+//   const lastToken = tokens[tokens.length - 1];
+//   output += paintText(lastToken);
 
-  return output;
-}
+//   return output;
+// }
 
 
 export function formatErrorLine(lineNumber, lines) {
-  const text = lines[lineNumber - 1]?.trim();
-  const content = text ? highlight(text) : ai("<EOF>");
+  const text = lines[lineNumber - 1];
+  // const content = text ? highlight(text) : ai("<EOF>");
+  return spacer(4-String(lineNumber).length) + `${dim(lineNumber)} ${deepPurple("|")} ${text}`;
+}
 
-  return spacer() + `${dim(lineNumber)} ${deepPurple("|")} ${content}`;
+export function getContextLine(startLine, fileLines) {
+  let contextCounter = startLine - 2;
+
+  while (
+    contextCounter >= 0 &&
+    !fileLines[contextCounter]?.trimEnd().endsWith("{")
+  ) {
+    contextCounter--;
+  }
+
+  if (contextCounter < 0) return null;
+
+  return contextCounter + 1;
 }

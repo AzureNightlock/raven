@@ -31,7 +31,7 @@ export function createTokenStream(tokens) {
       if (token.type !== type) {
         throw new RavenError(
           "SyntaxError",
-          `Expected type ${type} for ${value}, but got ${token.type} for "${token.value}"`,
+          `Expected type ${type}, but got ${token.type}: "${token.value}"`,
           token,
         );
       }
