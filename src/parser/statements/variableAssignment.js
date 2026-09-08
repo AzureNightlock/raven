@@ -9,5 +9,6 @@ export function parseVariableAssignment(stream) {
     dataType: "int",
     varName: varName.value,
     value: value.value,
+    token: varName
   };
 }

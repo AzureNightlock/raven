@@ -33,5 +33,6 @@ export function parsePropertyAssignment(stream) {
     type: "PropertyAssignment",
     property: property.value,
     value: value.value,
+    
   };
 }

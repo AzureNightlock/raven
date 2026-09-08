@@ -7,6 +7,7 @@ import { generateJavaScript } from "./generator/js/generate.js";
 import { RavenError, reportAndExit } from "./errors/errors.js";
 import { green, aka, bold, dim } from "./cli/style.js";
 import { getFileSizes, printStage } from "./cli/utils.js";
+import { buildSymbolTable } from "./symbolTable/structure.js";
 
 const cwd = process.cwd();
 const file = process.argv[3] ?? "src/page.rvn";
@@ -38,6 +39,9 @@ try {
     );
   }
   const ast = runStage("Building AST", () => parse(tokens));
+  const symbolTable = runStage("Building Symbol Table", () =>
+    buildSymbolTable(ast),
+  );
   const javascript = runStage("Generating JavaScript", () =>
     generateJavaScript(ast),
   );
