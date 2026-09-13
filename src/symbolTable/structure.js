@@ -43,6 +43,10 @@ function walkNode(node, scope) {
   if (node.type === "PropertyAssignment") {
     define(scope, node.varName, "html", "property", node.token);
   }
+
+  if (node.type === "EventListener") {
+    define(scope, node.eventType, "html", "event", node.token);
+  }
 }
 
 export function buildSymbolTable(ast) {
