@@ -12,7 +12,7 @@ import { buildSymbolTable } from "./symbolTable/structure.js";
 const cwd = process.cwd();
 const file = process.argv[3] ?? "src/page.rvn";
 
-const TOTAL = 4;
+const TOTAL = 5;
 let stage = 0;
 
 function formatSize(bytes) {

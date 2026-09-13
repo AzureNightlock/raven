@@ -1,5 +1,5 @@
 import { RavenError } from "../errors/errors.js";
-import { DATA_TYPES, EVENTS } from "../language/types.js";
+import { DATA_TYPES, EVENTS, PROPERTIES, SPECIAL_PROPERTIES } from "../language/types.js";
 import { parseCreateElement } from "./statements/createElement.js";
 import { parseEventListener } from "./statements/eventListener.js";
 import { parsePropertyAssignment } from "./statements/propertyAssignment.js";
@@ -7,7 +7,6 @@ import { parseVariableAssignment } from "./statements/variableAssignment.js";
 
 export function parseStatement(stream) {
   const token = stream.peek();
-  const nextToken = stream.peek(1);
 
   if (DATA_TYPES.has(token.value)) {
     if (token.value === "html") {
@@ -24,17 +23,8 @@ export function parseStatement(stream) {
     return parseEventListener(stream);
   }
 
-  if (token.type === "IDENTIFIER") {
-    if (nextToken.type === "SYMBOL" && nextToken.value === "=") {
-      return parsePropertyAssignment(stream);
-    }
-
-    throw new RavenError(
-      "SyntaxError",
-      `Expected a property assignment or event handler after "${token.value}"`,
-      token,
-      `Write a html <property> = value or <event>({ ... }).`,
-    );
+  if (PROPERTIES.has(token.value) || SPECIAL_PROPERTIES.has(token.value)) {
+    return parsePropertyAssignment(stream);
   }
 
   throw new RavenError(

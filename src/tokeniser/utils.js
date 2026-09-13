@@ -6,7 +6,9 @@ import {
   COMPARISON_OPERATORS,
   LOGICAL_OPERATORS,
   SYMBOLS,
-  COMPOUND_ASSIGNMENT_OPERATORS
+  COMPOUND_ASSIGNMENT_OPERATORS,
+  PROPERTIES,
+  SPECIAL_PROPERTIES,
 } from "../language/types.js";
 
 export function isLetter(char) {
@@ -26,6 +28,8 @@ export function tokenType(token) {
       value,
       "COMPOUND_ASSIGNMENT_OPERATOR",
     ]),
+    ...[...PROPERTIES].map((value) => [value, "PROPERTY"]),
+    ...[...SPECIAL_PROPERTIES].map((value) => [value, "PROPERTY"]), // might need to change this to special property
   ]);
 
   return TOKEN_TYPES.get(token) ?? "IDENTIFIER";

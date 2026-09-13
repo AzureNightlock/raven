@@ -5,7 +5,7 @@ export function generateHTML() {
   <meta charset="UTF-8">
   <title>Raven</title>
   <script src="script.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
 </body>

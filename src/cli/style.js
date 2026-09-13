@@ -18,4 +18,4 @@ export const sakura = paint("38;2;255;122;162"); // #ff7aa2
 export const ai = paint("38;2;40;72;110"); // indigo-ish
 export const sumi = paint("38;2;110;110;118"); // muted ink gray
 
-export const ink = paint("38;2;52;52;60");     // #34343c
+  export const ink = paint("38;2;52;52;60");     // #34343c

@@ -8,7 +8,7 @@ export function parsePropertyAssignment(stream) {
   property    value
   */
 
-  const property = stream.expect("IDENTIFIER");
+  const property = stream.expect("PROPERTY");
 
   stream.expect("SYMBOL", "=");
 
@@ -31,8 +31,8 @@ export function parsePropertyAssignment(stream) {
 
   return {
     type: "PropertyAssignment",
-    property: property.value,
+    varName: property.value,
     value: value.value,
-    
+    token: property,
   };
 }
