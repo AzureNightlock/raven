@@ -4,7 +4,6 @@ export function generateJavaScript(ast) {
   const lines = [];
 
   for (const node of ast.body) {
-    console.log(node)
     generateNode(node, lines);
   }
 
