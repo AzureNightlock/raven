@@ -57,6 +57,7 @@ export function compile({ logs = true }) {
     const filePaths = runStage("Generating Files", () => generate(javascript));
 
     if (logs) {
+      console.log();
       const fileSizesObject = getFileSizes(filePaths);
 
       for (const { file, size } of fileSizesObject) {
@@ -65,6 +66,7 @@ export function compile({ logs = true }) {
 
         console.log(`${icon} ${file} ${dim(label)}`);
       }
+
 
       const elapsed = Math.round(performance.now() - started);
 
