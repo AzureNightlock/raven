@@ -89,7 +89,7 @@ export const OPERATOR_CHARS = new Set(
     ...LOGICAL_OPERATORS,
   ].join(""),
 );
-export const commands = new Set(["init", "compile", "format", "lint"]);
+export const commands = new Set(["init", "compile", "run", "crun", "list", "format", "lint", "docs"]);
 
 // to be used soon
 // const TOKEN_COLOURS = {
