@@ -4,11 +4,12 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { generateSetup } from "../generator/setup.js";
 import { deepPurple, aka, bold, dim } from "./utils/style.js";
-import { commands } from "../language/types.js";
+import { commandDefinitions, commands } from "../language/types.js";
 import { getVersion } from "./utils/utils.js";
 import { startServer } from "./commands/run/server.js";
 import { startCrun } from "./commands/crun/crun.js";
 import { compile } from "./commands/compile/compile.js";
+import { listCommands } from "./commands/list/list.js";
 
 const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
 
@@ -26,7 +27,7 @@ if (!commands.has(command)) {
 }
 
 console.log(`${deepPurple("raven")} ${dim(`v${version}`)}`);
-console.log(`${deepPurple("raven")} ${dim("›")} ${bold(deepPurple(command))}`);
+console.log(`${deepPurple("raven")} ${dim("›")} ${bold(deepPurple(command))}\n`);
 
 if (command === "compile") {
   compile({logs: true})
@@ -59,4 +60,8 @@ if (command === "run") {
 
 if (command === "crun") {
   startCrun()
+}
+
+if (command === "list"){
+  listCommands(commandDefinitions)
 }

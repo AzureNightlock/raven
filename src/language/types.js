@@ -89,7 +89,41 @@ export const OPERATOR_CHARS = new Set(
     ...LOGICAL_OPERATORS,
   ].join(""),
 );
-export const commands = new Set(["init", "compile", "run", "crun", "list", "format", "lint", "docs"]);
+
+export const commandDefinitions = [
+  {
+    title: "Projects",
+    commands: [["init", "Create a new Raven project"]],
+  },
+  {
+    title: "Build",
+    commands: [
+      ["compile", "Compile Raven source"],
+      ["run", "Run compiled output"],
+      ["crun", "Compile, run, and watch for changes"],
+    ],
+  },
+  {
+    title: "Code",
+    commands: [
+      ["format", "Format Raven source"],
+      ["lint", "Check Raven source"],
+    ],
+  },
+  {
+    title: "General",
+    commands: [
+      ["docs", "Open Raven documentation"],
+      ["list", "List available commands"],
+    ],
+  },
+];
+
+export const commands = new Set(
+  commandDefinitions.flatMap((group) =>
+    group.commands.map(([command]) => command),
+  ),
+);
 
 // to be used soon
 // const TOKEN_COLOURS = {
