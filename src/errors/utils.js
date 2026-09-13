@@ -1,4 +1,4 @@
-import { deepPurple, dim} from "../cli/style.js";
+import { deepPurple, dim } from "../cli/utils/style.js";
 
 export function spacer(spaceSize = 3) {
   return " ".repeat(spaceSize);
@@ -36,11 +36,13 @@ export function spacer(spaceSize = 3) {
 //   return output;
 // }
 
-
 export function formatErrorLine(lineNumber, lines) {
   const text = lines[lineNumber - 1];
   // const content = text ? highlight(text) : ai("<EOF>");
-  return spacer(4-String(lineNumber).length) + `${dim(lineNumber)} ${deepPurple("|")} ${text}`;
+  return (
+    spacer(4 - String(lineNumber).length) +
+    `${dim(lineNumber)} ${deepPurple("|")} ${text}`
+  );
 }
 
 export function getContextLine(startLine, fileLines) {

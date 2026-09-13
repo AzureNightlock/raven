@@ -1,4 +1,4 @@
-import * as colors from "../cli/style.js";
+import * as colors from "../cli/utils/style.js";
 import { spacer, formatErrorLine, getContextLine } from "./utils.js";
 
 let errorNumber = 1; //change this when multiple errors get found at once gets implemented
@@ -40,7 +40,8 @@ function renderError(error, fileContent, file = "<anonymous>") {
   output.push(header);
   output.push(errorMessage);
 
-  const errorLine = formatErrorLine(line, fileLines) + (isEOF ? colors.ai("<EOF>") : "");
+  const errorLine =
+    formatErrorLine(line, fileLines) + (isEOF ? colors.ai("<EOF>") : "");
   if (contextLine === null) {
     output.push(errorLine);
   } else if (contextLine + 1 === line) {
@@ -55,7 +56,7 @@ function renderError(error, fileContent, file = "<anonymous>") {
   const left = Math.floor((displayLength - 1) / 2);
   const right = displayLength - left - 1;
 
-  const marker =  "─".repeat(left) + "┬" + "─".repeat(right);
+  const marker = "─".repeat(left) + "┬" + "─".repeat(right);
 
   output.push(
     spacer(5) +

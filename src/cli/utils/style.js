@@ -2,7 +2,6 @@ function paint(code) {
   return (text) => `\x1b[${code}m${text}\x1b[0m`;
 }
 
-export const purple = paint("38;5;141");
 export const deepPurple = paint("38;5;99");
 export const green = paint("38;2;74;222;128");
 export const bold = paint("1");
