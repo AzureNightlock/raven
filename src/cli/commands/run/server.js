@@ -9,6 +9,11 @@ const outputDir = path.resolve("output");
 const htmlPath = path.join(outputDir, "index.html");
 const javascriptPath = path.join(outputDir, "script.js");
 
+if (!fs.existsSync(htmlPath)) {
+  console.log(`Nothing to run in ${process.cwd()}, please run raven compile`);
+  process.exit();
+}
+
 const pages = new Set();
 
 const RELOAD_SCRIPT = `
