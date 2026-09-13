@@ -8,8 +8,8 @@ export class Scope {
   }
 }
 
-function define(scope, name, type, kind, token, checkName = name) {
-  if (scope.symbols.has(checkName)) {
+function define(scope, name, type, kind, token) {
+  if (scope.symbols.has(name)) {
     throw new RavenError(
       "DeclarationError",
       `"${name}" has already been declared at scope: "${scope.name}"`,
@@ -41,7 +41,7 @@ function walkNode(node, scope) {
   }
 
   if (node.type === "PropertyAssignment") {
-    define(scope, node.varName, "html", "property", node.token, node.property);
+    define(scope, node.varName, "html", "property", node.token);
   }
 }
 
