@@ -1,6 +1,6 @@
 {
   "name": "@azurenightlock/raven",
-  "version": "0.3.0",
+  "version": "0.3.3",
   "description": "clean JS framework + dependency free",
   "repository": {
     "type": "git",
