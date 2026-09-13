@@ -14,13 +14,6 @@ export function generateNode(node, lines, currentElement, currentTagName) {
 
     lines.push(`${currentElement ?? "document.body"}.appendChild(${varName});`);
   } else if (node.type === "PropertyAssignment") {
-    if (!currentElement) {
-      throw new RavenError(
-        "PropertyError",
-        `Property "${node.varName}" property must be inside an html element`,
-      );
-    }
-
     if (PROPERTIES.has(node.varName)) {
       lines.push(
         `${currentElement}.${node.varName} = ${JSON.stringify(node.value)};`,
