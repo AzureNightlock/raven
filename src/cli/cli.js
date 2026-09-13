@@ -52,8 +52,9 @@ if (command === "init") {
     process.exit(1);
   }
 }
+
 if (command === "run") {
-  startServer()
+  startServer({hotReload: false})
 }
 
 if (command === "crun") {
