@@ -1,5 +1,5 @@
 import { RavenError } from "../errors/errors.js";
-import { properties } from "../language/types.js";
+import { PROPERTIES, SPECIAL_PROPERTIES } from "../language/types.js";
 
 export function generateNode(node, lines, currentElement, currentTagName) {
   if (node.type === "CreateHTMLElement") {
@@ -17,22 +17,23 @@ export function generateNode(node, lines, currentElement, currentTagName) {
     if (!currentElement) {
       throw new RavenError(
         "PropertyError",
-        `Property "${node.property}" property must be inside an html element`,
+        `Property "${node.varName}" property must be inside an html element`,
       );
     }
 
-    if (properties.has(node.property)) {
+    if (PROPERTIES.has(node.varName)) {
       lines.push(
-        `${currentElement}.${node.property} = ${JSON.stringify(node.value)};`,
+        `${currentElement}.${node.varName} = ${JSON.stringify(node.value)};`,
       );
-    } else if (node.property === "class") {
+    } else if (SPECIAL_PROPERTIES.has(node.varName)) {
+      if (node.varName === "class")
       lines.push(
         `${currentElement}.className = ${JSON.stringify(node.value)};`,
       );
     } else {
       throw new RavenError(
         "PropertyError",
-        `Invalid property "${node.property}" for <${currentTagName}> element "${currentElement}"`,
+        `Invalid property "${node.varName}" for <${currentTagName}> element "${currentElement}"`,
       );
     }
   } else if (node.type === "EventListener") {

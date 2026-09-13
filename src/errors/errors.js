@@ -31,9 +31,9 @@ function renderError(error, fileContent, file = "<anonymous>") {
 
   const header =
     colors.sumi("╔══[") +
-    colors.purple(errorNumber) +
+    colors.deepPurple(errorNumber) +
     colors.sumi("]══[") +
-    `${colors.purple(file)}${colors.dim(":")}${colors.purple(line)}${colors.dim(":")}${colors.purple(columnStart)}` +
+    `${colors.deepPurple(file)}${colors.dim(":")}${colors.deepPurple(line)}${colors.dim(":")}${colors.deepPurple(columnStart)}` +
     colors.sumi("]") +
     colors.sumi("═".repeat(remaining));
 
@@ -73,7 +73,7 @@ function renderError(error, fileContent, file = "<anonymous>") {
   if (error.hint) {
     output.push(
       spacer(2) +
-        `${colors.purple("hint")}${colors.dim(":")} ${colors.ai(error.hint)}`,
+        `${colors.deepPurple("hint")}${colors.dim(":")} ${colors.ai(error.hint)}`,
     );
   }
 

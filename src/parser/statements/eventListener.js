@@ -24,7 +24,6 @@ export function parseEventListener(stream) {
 
   stream.expect("SYMBOL", "}");
   stream.expect("SYMBOL", ")");
-
   return {
     type: "EventListener",
     eventType: event.value,

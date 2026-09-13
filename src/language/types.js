@@ -2,7 +2,9 @@ export const DATA_TYPES = new Set(["int", "str", "bool", "html"]);
 
 export const SYMBOLS = new Set(["(", ")", "{", "}", ".", "=", "=>"]);
 
-export const properties = new Set([
+export const SPECIAL_PROPERTIES = new Set(["class", "render"])
+
+export const PROPERTIES = new Set([
   // All elements
   "textContent",
   "innerText",

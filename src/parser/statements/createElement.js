@@ -26,5 +26,6 @@ export function parseCreateElement(stream) {
     tagName: tagName.value,
     varName: varName.value,
     body,
+    token: varName
   };
 }
