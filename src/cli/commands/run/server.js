@@ -2,6 +2,7 @@ import fs from "node:fs";
 import http from "node:http";
 import path from "node:path";
 import { deepPurple, bold, dim } from "../../utils/style.js";
+import { exec } from "node:child_process";
 
 const hostname = "127.0.0.1";
 const port = 3000;
@@ -19,6 +20,17 @@ const RELOAD_SCRIPT = `
 </script>
 <!-- so ignore this guy -->
 `;
+
+function openBrowser(url) {
+  const platform = process.platform;
+  if (platform === "win32") {
+    exec(`start "" "${url}"`);
+  } else if (platform === "darwin") {
+    exec(`open "${url}"`);
+  } else {
+    exec(`xdg-open "${url}"`);
+  }
+}
 
 function handleEvents(req, res) {
   res.writeHead(200, {
@@ -95,5 +107,9 @@ export function startServer({ hotReload = false }) {
         `${dim("· local:")} ${deepPurple(url)}\n` +
         `${dim("· press")} ${bold("CTRL+C")} ${dim("to stop")}\n`,
     );
+
+    setTimeout(() => {
+      openBrowser(url);
+    }, 500);
   });
 }
