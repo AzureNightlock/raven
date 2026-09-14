@@ -4,7 +4,7 @@
   
 
 <a href="https://github.com/AzureNightlock"><img alt="Made by AzureNightlock" src="https://img.shields.io/badge/MADE%20BY-AzureNightlock-875fff.svg?style=for-the-badge&logo=github&labelColor=000000"></a>&nbsp;&nbsp;
-<a href="https://www.npmjs.com/package/raven"><img alt="NPM version" src="https://img.shields.io/badge/NPM-v0.3.0-875fff.svg?style=for-the-badge&logo=npm&labelColor=000000"></a>&nbsp;&nbsp;
+<a href="https://www.npmjs.com/package/@azurenightlock/raven"><img alt="NPM version" src="https://img.shields.io/badge/NPM-v0.3.3-875fff.svg?style=for-the-badge&logo=npm&labelColor=000000"></a>&nbsp;&nbsp;
 <a href="https://github.com/AzureNightlock/raven"><img alt="License" src="https://img.shields.io/badge/LICENSE-Apache 2.0-875fff.svg?style=for-the-badge&labelColor=000000"></a>&nbsp;&nbsp;
 <a href="https://github.com/AzureNightlock/raven"><img alt="Repository views" src="https://hits.sh/github.com/AzureNightlock/raven.svg?style=for-the-badge&label=VIEWS&color=875fff&labelColor=000000"></a>
 
