@@ -30,6 +30,10 @@ function walkNode(node, scope) {
     define(scope, node.varName, "int", "variable", node.token);
   }
 
+  if (node.type === "CreateStringVariable") {
+    define(scope, node.varName, "str", "variable", node.token);
+  }
+
   if (node.type === "CreateHTMLElement") {
     define(scope, node.varName, "html", "element", node.token);
 

@@ -1,4 +1,4 @@
-import { generateNode } from "../generateNode.js";
+import { generateNode } from "../generate.js";
 
 export function generateHtmlElement(node, lines, currentElement) {
   const varName = node.varName;

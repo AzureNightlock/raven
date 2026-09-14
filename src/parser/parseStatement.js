@@ -2,8 +2,9 @@ import { RavenError } from "../errors/errors.js";
 import { DATA_TYPES, EVENTS, PROPERTIES, SPECIAL_PROPERTIES } from "../language/types.js";
 import { parseCreateElement } from "./statements/createElement.js";
 import { parseEventListener } from "./statements/eventListener.js";
+import { parseIntegerAssignment } from "./statements/integerAssignment.js";
 import { parsePropertyAssignment } from "./statements/propertyAssignment.js";
-import { parseVariableAssignment } from "./statements/variableAssignment.js";
+import { parseStringAssignment } from "./statements/stringAssignment.js";
 
 export function parseStatement(stream) {
   const token = stream.peek();
@@ -13,9 +14,12 @@ export function parseStatement(stream) {
       return parseCreateElement(stream);
     }
 
-    // ex: int x
     if (token.value === "int") {
-      return parseVariableAssignment(stream);
+      return parseIntegerAssignment(stream);
+    }
+
+    if (token.value === "str") {
+      return parseStringAssignment(stream);
     }
   }
 
