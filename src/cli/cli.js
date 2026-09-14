@@ -3,7 +3,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { generateSetup } from "../generator/setup.js";
-import { deepPurple, aka, bold, dim } from "./utils/style.js";
+import { sumi, deepPurple, aka, bold, dim } from "./utils/style.js";
 import { commandDefinitions, commands } from "../language/types.js";
 import { getVersion } from "./utils/utils.js";
 import { startServer } from "./commands/run/server.js";
@@ -16,21 +16,48 @@ const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
 const command = process.argv[2];
 const version = getVersion(currentDirectory);
 
+const logo = `
+██████╗  █████╗ ██╗   ██╗ █████╗ ██████╗
+██╔══██╗██╔══██╗██║   ██║██╔══██╗██╔══██╗
+██║  ╚═╝███████║██║   ██║███████║██║  ██║
+██║     ██╔══██║╚██╗ ██╔╝██╔════╝██║  ██║
+██║     ██║  ██║ ╚████╔╝ ╚██████╗██║  ██║
+╚═╝     ╚═╝  ╚═╝  ╚═══╝   ╚═════╝╚═╝  ╚═╝`.trim();
+
+if (!command) {
+  const centeredLogo = logo
+    .split("\n")
+    .map((line) => `          ${line}`)
+    .join("\n");
+
+  console.log(
+    `\n${deepPurple(centeredLogo)}\n` +
+      `\n                       ${sumi("raven")} ${deepPurple(`v${version}`)}\n` +
+      `\n             ${bold("clean JS framework")} ${sumi("·")} ${bold("dependency free")}\n` +
+      `\n           ${sumi("run")} ${deepPurple(bold("raven list"))} ${sumi("to see available commands")}\n` +
+      `\n                   ${"Made by"} ${deepPurple(bold("AzureNightlock"))}\n`,
+  );
+
+  process.exit(0);
+}
+
 if (!commands.has(command)) {
   console.error(
-    `${aka(bold("✕ unknown command"))} ${aka(command ?? "<none>")}\n` +
+    `${aka(bold("✕ unknown command"))} ${aka(command)}\n` +
       `  expected commands like ${deepPurple("run")} or ${deepPurple("compile")}`,
   );
-  console.error(`Type "raven list" to list all the commands`)
+  console.error(`Type "raven list" to list all the commands`);
 
   process.exit(1);
 }
 
 console.log(`${deepPurple("raven")} ${dim(`v${version}`)}`);
-console.log(`${deepPurple("raven")} ${dim("›")} ${bold(deepPurple(command))}\n`);
+console.log(
+  `${deepPurple("raven")} ${dim("›")} ${bold(deepPurple(command))}\n`,
+);
 
 if (command === "compile") {
-  compile({logs: true})
+  compile({ logs: true });
 }
 
 if (command === "init") {
@@ -55,13 +82,13 @@ if (command === "init") {
 }
 
 if (command === "run") {
-  startServer({hotReload: false})
+  startServer({ hotReload: false });
 }
 
 if (command === "crun") {
-  startCrun()
+  startCrun();
 }
 
-if (command === "list"){
-  listCommands(commandDefinitions)
+if (command === "list") {
+  listCommands(commandDefinitions);
 }
