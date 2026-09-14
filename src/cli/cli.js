@@ -2,7 +2,7 @@
 
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { generateSetup } from "../generator/setup.js";
+import { generateSetup } from "../generator/utils/setup.js";
 import { sumi, deepPurple, aka, bold, dim } from "./utils/style.js";
 import { commandDefinitions, commands } from "../language/types.js";
 import { getVersion } from "./utils/utils.js";

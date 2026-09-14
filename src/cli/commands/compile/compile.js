@@ -2,8 +2,8 @@ import fs from "fs";
 import path from "path";
 import { tokenise } from "../../../tokeniser/tokenise.js";
 import { parse } from "../../../parser/main.js";
-import { generateFiles } from "../../../generator/generateFiles.js";
-import { generateJavaScript } from "../../../generator/js/generate.js";
+import { generateFiles } from "../../../generator/utils/generateFiles.js";
+import { generateJavaScript } from "../../../generator/generate.js";
 import { RavenError, reportAndExit } from "../../../errors/errors.js";
 import { green, aka, bold, dim } from "../../utils/style.js";
 import { getFileSizes, printStage } from "../../../cli/utils/utils.js";
@@ -54,7 +54,9 @@ export function compile({ logs = true }) {
       generateJavaScript(ast),
     );
 
-    const filePaths = runStage("Generating Files", () => generateFiles(javascript));
+    const filePaths = runStage("Generating Files", () =>
+      generateFiles(javascript),
+    );
 
     if (logs) {
       console.log();
