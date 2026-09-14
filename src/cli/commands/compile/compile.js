@@ -67,7 +67,6 @@ export function compile({ logs = true }) {
         console.log(`${icon} ${file} ${dim(label)}`);
       }
 
-
       const elapsed = Math.round(performance.now() - started);
 
       console.log(
