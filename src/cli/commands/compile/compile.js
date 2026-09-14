@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { tokenise } from "../../../tokeniser/tokenise.js";
 import { parse } from "../../../parser/main.js";
-import { generate } from "../../../generator/generator.js";
+import { generateFiles } from "../../../generator/generateFiles.js";
 import { generateJavaScript } from "../../../generator/js/generate.js";
 import { RavenError, reportAndExit } from "../../../errors/errors.js";
 import { green, aka, bold, dim } from "../../utils/style.js";
@@ -54,7 +54,7 @@ export function compile({ logs = true }) {
       generateJavaScript(ast),
     );
 
-    const filePaths = runStage("Generating Files", () => generate(javascript));
+    const filePaths = runStage("Generating Files", () => generateFiles(javascript));
 
     if (logs) {
       console.log();

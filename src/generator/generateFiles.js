@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { generateHTML } from "./html/generate.js";
 
-export function generate(javascriptGen) {
+export function generateFiles(javascriptGen) {
   const outputDirectory = "output";
 
   fs.mkdirSync(outputDirectory, {

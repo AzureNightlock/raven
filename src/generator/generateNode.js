@@ -22,14 +22,12 @@ export function generateNode(node, lines, currentElement, currentTagName) {
     }
 
     if (PROPERTIES.has(node.varName)) {
-      lines.push(
-        `${currentElement}.${node.varName} = ${JSON.stringify(node.value)};`,
-      );
-    } else if (SPECIAL_PROPERTIES.has(node.varName)) {
-      if (node.varName === "class")
-      lines.push(
-        `${currentElement}.className = ${JSON.stringify(node.value)};`,
-      );
+      const value =
+        node.valueType === "IDENTIFIER"
+          ? node.value
+          : JSON.stringify(node.value);
+
+      lines.push(`${currentElement}.${node.varName} = ${value};`);
     } else {
       throw new RavenError(
         "PropertyError",
