@@ -2,6 +2,7 @@ import fs from "node:fs";
 
 import { compile } from "../compile/compile.js";
 import { reloadBrowser, startServer } from "../run/server.js";
+import { green, bold, dim } from "../../utils/style.js";
 
 const file = "src/page.rvn";
 const debounce = 50;
@@ -19,7 +20,7 @@ export function startCrun() {
       compile({ logs: false });
       reloadBrowser();
 
-      console.log("recompiled");
+      console.log(`${green(bold("✓ recompiled"))} ${dim("changes applied")}`);
     }, debounce);
   });
 }
