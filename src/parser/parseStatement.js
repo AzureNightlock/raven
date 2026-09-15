@@ -19,7 +19,6 @@ export function parseStatement(stream) {
 
   if (DATA_TYPES.has(token.value)) {
     if (token.value === "html") {
-      console.log(stream.peek(2),stream.peek(3))
       if (stream.peek(3).value === "createElement") return parseCreateElement(stream);
       if (stream.peek(3).value === "createComponent") return parseCreateComponent(stream);
       if (stream.peek(3).type === "IDENTIFIER") return parseComponentAssignment(stream);

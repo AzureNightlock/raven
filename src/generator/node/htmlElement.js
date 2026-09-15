@@ -9,7 +9,7 @@ export function generateHtmlElement(node, lines, currentElement) {
   for (const statement of node.body) {
     generateNode(statement, lines, varName, node.tagName);
   }
-  if (node.scope === "global") {
+  if (node.scope.name === "global") {
     lines.push(`document.body.appendChild(${varName});`);
   } else if (currentElement) {
     lines.push(`${currentElement}.appendChild(${varName});`);
