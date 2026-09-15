@@ -1,4 +1,4 @@
-import { RavenError } from "../../errors/errors.js";
+import { RavenError } from "../../../errors/errors.js";
 
 export function parsePropertyAssignment(stream) {
   const property = stream.expect("PROPERTY");

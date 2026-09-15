@@ -5,6 +5,8 @@ import { generateEventListener } from "./node/eventListener.js";
 import { generateIntegerVariable } from "./node/integerVariable.js";
 import { generateStringVariable } from "./node/stringVariable.js";
 import { generateMemberAssignment } from "./node/memberAssignment.js";
+import { generateComponent } from "./node/component.js";
+import { generateComponentAssignment } from "./node/componentAssignment.js";
 
 export function generateJavaScript(ast) {
   const lines = [];
@@ -29,6 +31,10 @@ export function generateNode(node, lines, currentElement, currentTagName) {
     generateStringVariable(node, lines);
   } else if (node.type === "MemberAssignment") {
     generateMemberAssignment(node, lines);
+  } else if (node.type === "CreateComponent") {
+    generateComponent(node, lines);
+  } else if (node.type === "ComponentAssignment") {
+    generateComponentAssignment(node, lines, currentElement);
   } else {
     throw new RavenError("TypeError", `Unknown node type: ${node.type}`);
   }

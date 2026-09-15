@@ -78,6 +78,7 @@ export function compile({ logs = true }) {
 
     return filePaths;
   } catch (error) {
+    console.log(error)
     reportAndExit(error, source, file);
   }
 }

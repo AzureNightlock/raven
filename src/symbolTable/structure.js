@@ -34,6 +34,7 @@ function lookup(scope, name) {
 
 
 function walkNode(node, scope) {
+  node.scope = scope
   if (node.type === "CreateIntegerVariable") {
     define(scope, node.varName, "int", "variable", node.token);
   }

@@ -9,6 +9,9 @@ export function generateHtmlElement(node, lines, currentElement) {
   for (const statement of node.body) {
     generateNode(statement, lines, varName, node.tagName);
   }
-
-  lines.push(`${currentElement ?? "document.body"}.appendChild(${varName});`);
+  if (node.scope === "global") {
+    lines.push(`document.body.appendChild(${varName});`);
+  } else if (currentElement) {
+    lines.push(`${currentElement}.appendChild(${varName});`);
+  }
 }
