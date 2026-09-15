@@ -1,10 +1,8 @@
-import { RavenError } from "../../errors/errors.js";
-
-export function parsePropertyAssignment(stream) {
+export function parseMemberAssignment(stream) {
+  const object = stream.expect("IDENTIFIER");
+  stream.expect("SYMBOL", ".");
   const property = stream.expect("PROPERTY");
-
   stream.expect("SYMBOL", "=");
-
   const nextToken = stream.peek();
 
   let value;
@@ -20,15 +18,15 @@ export function parsePropertyAssignment(stream) {
       "SyntaxError",
       `Expected a number, string, or variable, but got ${nextToken.value}`,
       nextToken,
-      `Property values must be a literal or variable, like "hello", 42, or x.`,
+      `Membership assignments must be a literal or variable, like "hello", 42, or x.`,
     );
   }
-
   return {
-    type: "PropertyAssignment",
-    varName: property.value,
+    type: "MemberAssignment",
+    object: object.value,
+    property: property.value,
     value: value.value,
     valueType: value.type,
-    token: property,
+    token: object,
   };
 }

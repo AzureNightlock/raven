@@ -25,6 +25,14 @@ function define(scope, name, type, kind, token) {
   });
 }
 
+function lookup(scope, name) {
+  while (scope) {
+    if (scope.symbols.has(name)) return scope.symbols.get(name);
+    scope = scope.parentScope;
+  }
+}
+
+
 function walkNode(node, scope) {
   if (node.type === "CreateIntegerVariable") {
     define(scope, node.varName, "int", "variable", node.token);
@@ -50,6 +58,25 @@ function walkNode(node, scope) {
 
   if (node.type === "EventListener") {
     define(scope, node.eventType, "html", "event", node.token);
+  }
+  if (node.type === "MemberAssignment") {
+    const symbol = lookup(scope, node.object);
+
+    if (!symbol) {
+      throw new RavenError(
+        "ReferenceError",
+        `"${node.object}" is not defined`,
+        node.token,
+      );
+    }
+
+    if (symbol.kind !== "element") {
+      throw new RavenError(
+        "TypeError",
+        `"${node.object}" is a ${symbol.type}, not an html element`,
+        node.token,
+      );
+    }
   }
 }
 

@@ -14,6 +14,7 @@ export class RavenError extends Error {
 }
 
 function renderError(error, fileContent, file = "<anonymous>") {
+  console.log(error.token)
   const { type, line, columnStart, columnEnd, length } = error.token;
 
   const isEOF = type === "EOF";

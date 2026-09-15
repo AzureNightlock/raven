@@ -4,6 +4,7 @@ import { generatePropertyAssignment } from "./node/propertyAssignment.js";
 import { generateEventListener } from "./node/eventListener.js";
 import { generateIntegerVariable } from "./node/integerVariable.js";
 import { generateStringVariable } from "./node/stringVariable.js";
+import { generateMemberAssignment } from "./node/memberAssignment.js";
 
 export function generateJavaScript(ast) {
   const lines = [];
@@ -26,6 +27,8 @@ export function generateNode(node, lines, currentElement, currentTagName) {
     generateIntegerVariable(node, lines);
   } else if (node.type === "CreateStringVariable") {
     generateStringVariable(node, lines);
+  } else if (node.type === "MemberAssignment") {
+    generateMemberAssignment(node, lines);
   } else {
     throw new RavenError("TypeError", `Unknown node type: ${node.type}`);
   }
