@@ -2,8 +2,8 @@ import fs from "fs";
 import path from "path";
 import { tokenise } from "../../../tokeniser/tokenise.js";
 import { parse } from "../../../parser/main.js";
-import { generate } from "../../../generator/generator.js";
-import { generateJavaScript } from "../../../generator/js/generate.js";
+import { generateFiles } from "../../../generator/utils/generateFiles.js";
+import { generateJavaScript } from "../../../generator/generate.js";
 import { RavenError, reportAndExit } from "../../../errors/errors.js";
 import { green, aka, bold, dim } from "../../utils/style.js";
 import { getFileSizes, printStage } from "../../../cli/utils/utils.js";
@@ -48,13 +48,15 @@ export function compile({ logs = true }) {
 
     const ast = runStage("Building AST", () => parse(tokens));
 
-    runStage("Building Symbol Table", () => buildSymbolTable(ast));
+    const symbolTable = runStage("Building Symbol Table", () => buildSymbolTable(ast));
 
     const javascript = runStage("Generating JavaScript", () =>
-      generateJavaScript(ast),
+      generateJavaScript(symbolTable),
     );
 
-    const filePaths = runStage("Generating Files", () => generate(javascript));
+    const filePaths = runStage("Generating Files", () =>
+      generateFiles(javascript),
+    );
 
     if (logs) {
       console.log();
@@ -76,6 +78,7 @@ export function compile({ logs = true }) {
 
     return filePaths;
   } catch (error) {
+    console.log(error)
     reportAndExit(error, source, file);
   }
 }

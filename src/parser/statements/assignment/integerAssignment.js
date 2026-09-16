@@ -1,4 +1,4 @@
-export function parseVariableAssignment(stream) {
+export function parseIntegerAssignment(stream) {
   stream.expect("DATA_TYPE", "int");
   const varName = stream.expect("IDENTIFIER");
   stream.expect("SYMBOL", "=");

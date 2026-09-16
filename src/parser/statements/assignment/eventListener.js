@@ -1,5 +1,5 @@
-import { tokenToString } from "../utils.js";
-import { RavenError } from "../../errors/errors.js";
+import { tokenToString } from "../../utils.js";
+import { RavenError } from "../../../errors/errors.js";
 
 export function parseEventListener(stream) {
   const event = stream.expect("EVENT");

@@ -1,8 +1,7 @@
-import { parseStatement } from "../parseStatement.js";
+import { parseStatement } from "../../parseStatement.js";
 
 export function parseCreateElement(stream) {
   stream.expect("DATA_TYPE", "html");
-
   const varName = stream.expect("IDENTIFIER");
   stream.expect("SYMBOL", "=");
   stream.expect("KEYWORD", "createElement");
@@ -26,6 +25,6 @@ export function parseCreateElement(stream) {
     tagName: tagName.value,
     varName: varName.value,
     body,
-    token: varName
+    token: varName,
   };
 }

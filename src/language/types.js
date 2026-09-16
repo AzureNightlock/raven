@@ -55,6 +55,7 @@ export const PROPERTIES = new Set([
 
 export const KEYWORDS = new Set([
   "createElement",
+  "createComponent",
   "if",
   "while",
   "for",

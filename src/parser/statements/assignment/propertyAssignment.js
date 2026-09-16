@@ -1,13 +1,6 @@
-import { RavenError } from "../../errors/errors.js";
+import { RavenError } from "../../../errors/errors.js";
 
 export function parsePropertyAssignment(stream) {
-  /* 
-  EXAMPLE:
-  textContent = 5
-      ↑         ↑
-  property    value
-  */
-
   const property = stream.expect("PROPERTY");
 
   stream.expect("SYMBOL", "=");
@@ -20,12 +13,14 @@ export function parsePropertyAssignment(stream) {
     value = stream.expect("NUMBER");
   } else if (nextToken.type === "STRING") {
     value = stream.expect("STRING");
+  } else if (nextToken.type === "IDENTIFIER") {
+    value = stream.expect("IDENTIFIER");
   } else {
     throw new RavenError(
       "SyntaxError",
-      `Expected a number or string, but got ${nextToken.value}`,
+      `Expected a number, string, or variable, but got ${nextToken.value}`,
       nextToken,
-      `Property values must be a literal, like "hello" or 42.`,
+      `Property values must be a literal or variable, like "hello", 42, or x.`,
     );
   }
 
@@ -33,6 +28,7 @@ export function parsePropertyAssignment(stream) {
     type: "PropertyAssignment",
     varName: property.value,
     value: value.value,
+    valueType: value.type,
     token: property,
   };
 }
