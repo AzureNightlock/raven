@@ -1,4 +1,4 @@
-import { RavenError } from "../../../errors/errors";
+import { RavenError } from "../../../errors/errors.js";
 
 export function parseMemberAssignment(stream) {
   const object = stream.expect("IDENTIFIER");

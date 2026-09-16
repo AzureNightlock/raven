@@ -48,10 +48,10 @@ export function compile({ logs = true }) {
 
     const ast = runStage("Building AST", () => parse(tokens));
 
-    runStage("Building Symbol Table", () => buildSymbolTable(ast));
+    const symbolTable = runStage("Building Symbol Table", () => buildSymbolTable(ast));
 
     const javascript = runStage("Generating JavaScript", () =>
-      generateJavaScript(ast),
+      generateJavaScript(symbolTable),
     );
 
     const filePaths = runStage("Generating Files", () =>
